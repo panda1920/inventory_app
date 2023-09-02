@@ -4,7 +4,7 @@
 **/*.log
 
 # ignore env files
-**/.env
+**/.env*.local
 
 # dependencies
 **/node_modules/
@@ -29,3 +29,9 @@
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# editor
+*.code-workspace
+
+# credentials
+/credentials
