@@ -46,6 +46,7 @@ const SyledToolbar = styled(Toolbar)(({ theme }) => {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    // https://github.com/mui/material-ui/issues/28911
     paddingInline: `${theme.spacing(6)} !important`,
   }
 })
