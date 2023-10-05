@@ -1,0 +1,11 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.gridItem {
+  background-color: dimgray;
+  padding: 1em;
+  color: white;
+}
