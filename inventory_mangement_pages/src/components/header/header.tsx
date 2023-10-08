@@ -4,8 +4,14 @@ import { AppBar, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/ma
 import { styled } from '@mui/material/styles'
 import { MouseEvent, useState } from 'react'
 
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { checkLogin, login, logout } from '@/store/slice/user'
+import type { LoginPayload } from '@/types/api'
+
 export default function Header() {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+  const dispatch = useAppDispatch()
+  const isLoggedIn = useAppSelector(checkLogin)
 
   const openMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
@@ -13,14 +19,17 @@ export default function Header() {
   const closeMenu = () => {
     setAnchorEl(null)
   }
-  const login = async () => {
+  const loginHandler = async () => {
     try {
       const response = await fetch('/api/login')
-      console.log(response)
-      console.log(await response.json())
+      const responseJson = (await response.json()) as LoginPayload
+      dispatch(login(responseJson.token))
     } catch (e) {
       console.error(e)
     }
+  }
+  const logoutHandler = () => {
+    dispatch(logout())
   }
 
   return (
@@ -31,10 +40,17 @@ export default function Header() {
           <MenuIcon fontSize='inherit' />
         </IconButton>
         <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={closeMenu}>
-          <StyledMenuItem onClick={login}>
-            <LoginIcon fontSize='medium' />
-            <Typography>Login</Typography>
-          </StyledMenuItem>
+          {isLoggedIn ? (
+            <StyledMenuItem onClick={logoutHandler}>
+              <LoginIcon fontSize='medium' />
+              <Typography>Logout</Typography>
+            </StyledMenuItem>
+          ) : (
+            <StyledMenuItem onClick={loginHandler}>
+              <LoginIcon fontSize='medium' />
+              <Typography>Login</Typography>
+            </StyledMenuItem>
+          )}
         </Menu>
       </SyledToolbar>
     </AppBar>
@@ -47,6 +63,7 @@ const SyledToolbar = styled(Toolbar)(({ theme }) => {
     flexDirection: 'row',
     justifyContent: 'space-between',
     // https://github.com/mui/material-ui/issues/28911
+    // needs extra specificity to modify certain css properties
     paddingInline: `${theme.spacing(6)} !important`,
   }
 })
@@ -56,6 +73,6 @@ const StyledMenuItem = styled(MenuItem)(() => {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'start',
-    gap: '.5em',
+    gap: '1em',
   }
 })
