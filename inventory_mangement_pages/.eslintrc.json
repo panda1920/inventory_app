@@ -1,11 +1,18 @@
 {
-  "extends": ["next/core-web-vitals" , "prettier"],
+  "extends": ["next/core-web-vitals", "prettier"],
   "ignorePatterns": ["/*.js"],
   "rules": {
     // https://mui.com/material-ui/guides/minimizing-bundle-size/#option-one-use-path-imports
-    "no-restricted-imports": [
-      "error",
-      { "patterns": ["@mui/*/*/*"]}
+    "no-restricted-imports": ["error", { "patterns": ["@mui/*/*/*"] }],
+    // https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/order.md
+    "import/order": [
+      "warn",
+      {
+        "groups": ["builtin", "external"],
+        "pathGroups": [{ "pattern": "@/**", "group": "internal" }],
+        "newlines-between": "always",
+        "warnOnUnassignedImports": true
+      }
     ]
   }
 }
