@@ -1,6 +1,7 @@
 import { createTheme, ThemeProvider } from '@mui/material'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
+import { StrictMode } from 'react'
 import { Provider as ReduxProvider } from 'react-redux'
 
 import Header from '@/components/header/header'
@@ -20,14 +21,16 @@ const customTheme = createTheme({
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <ReduxProvider store={store}>
-      <ThemeProvider theme={customTheme}>
-        <Head>
-          <meta name='viewport' content='initial-scale=1, width=device-width' />
-        </Head>
-        <Header />
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </ReduxProvider>
+    <StrictMode>
+      <ReduxProvider store={store}>
+        <ThemeProvider theme={customTheme}>
+          <Head>
+            <meta name='viewport' content='initial-scale=1, width=device-width' />
+          </Head>
+          <Header />
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </ReduxProvider>
+    </StrictMode>
   )
 }
