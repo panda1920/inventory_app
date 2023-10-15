@@ -1,3 +1,3 @@
-export type LoginPayload = {
+export type LoginResponse = {
   token: string
 }

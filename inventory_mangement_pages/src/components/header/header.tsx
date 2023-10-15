@@ -6,7 +6,7 @@ import { MouseEvent, useState } from 'react'
 
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { checkLogin, login, logout } from '@/store/slice/user'
-import type { LoginPayload } from '@/types/api'
+import type { LoginResponse } from '@/types/api'
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
@@ -22,7 +22,7 @@ export default function Header() {
   const loginHandler = async () => {
     try {
       const response = await fetch('/api/login')
-      const responseJson = (await response.json()) as LoginPayload
+      const responseJson = (await response.json()) as LoginResponse
       dispatch(login(responseJson.token))
     } catch (e) {
       console.error(e)
@@ -33,7 +33,7 @@ export default function Header() {
   }
 
   return (
-    <AppBar>
+    <AppBar position='static'>
       <SyledToolbar>
         <Typography variant='h3'>Header</Typography>
         <IconButton aria-label='hamburger-menu' size='medium' onClick={openMenu}>
