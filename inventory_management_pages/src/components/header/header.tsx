@@ -5,7 +5,7 @@ import { styled } from '@mui/material/styles'
 import { MouseEvent, useState } from 'react'
 
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { checkLogin, login, logout } from '@/store/slice/user'
+import { checkLogin, loginAction, logoutAction } from '@/store/slice/user'
 import type { LoginResponse } from '@/types/api'
 
 export default function Header() {
@@ -19,17 +19,17 @@ export default function Header() {
   const closeMenu = () => {
     setAnchorEl(null)
   }
-  const loginHandler = async () => {
+  const login = async () => {
     try {
       const response = await fetch('/api/login')
       const responseJson = (await response.json()) as LoginResponse
-      dispatch(login(responseJson.token))
+      dispatch(loginAction(responseJson.token))
     } catch (e) {
       console.error(e)
     }
   }
-  const logoutHandler = () => {
-    dispatch(logout())
+  const logout = () => {
+    dispatch(logoutAction())
   }
 
   return (
@@ -41,12 +41,12 @@ export default function Header() {
         </IconButton>
         <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={closeMenu}>
           {isLoggedIn ? (
-            <StyledMenuItem onClick={logoutHandler}>
+            <StyledMenuItem onClick={logout}>
               <LoginIcon fontSize='medium' />
               <Typography>Logout</Typography>
             </StyledMenuItem>
           ) : (
-            <StyledMenuItem onClick={loginHandler}>
+            <StyledMenuItem onClick={login}>
               <LoginIcon fontSize='medium' />
               <Typography>Login</Typography>
             </StyledMenuItem>

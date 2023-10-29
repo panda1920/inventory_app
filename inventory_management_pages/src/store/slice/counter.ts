@@ -25,6 +25,9 @@ const counterSlice = createSlice({
     decrement(state) {
       state.count--
     },
+    setCount(state, action) {
+      state.count = action.payload
+    },
   },
   extraReducers(builder) {
     builder
@@ -41,6 +44,10 @@ const counterSlice = createSlice({
 export default counterSlice
 
 // not necessary to export anything below but it is for conveneience
-export const { increment: incrementAction, decrement: decrementAction } = counterSlice.actions
+export const {
+  increment: incrementAction,
+  decrement: decrementAction,
+  setCount: setCountAction,
+} = counterSlice.actions
 
 export const getCurrentCount = (state: RootState) => state.counter.count

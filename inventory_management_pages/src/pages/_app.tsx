@@ -5,7 +5,7 @@ import { StrictMode } from 'react'
 import { Provider as ReduxProvider } from 'react-redux'
 
 import Header from '@/components/header/header'
-import store from '@/store/store'
+import { createStore } from '@/store/store'
 import '@/styles/globals.css'
 
 const customTheme = createTheme({
@@ -20,6 +20,9 @@ const customTheme = createTheme({
 })
 
 export default function App({ Component, pageProps }: AppProps) {
+  const { token, ...restProps } = pageProps
+  const store = createStore(token ?? null)
+
   return (
     <StrictMode>
       <ReduxProvider store={store}>
@@ -28,7 +31,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <meta name='viewport' content='initial-scale=1, width=device-width' />
           </Head>
           <Header />
-          <Component {...pageProps} />
+          <Component {...restProps} />
         </ThemeProvider>
       </ReduxProvider>
     </StrictMode>
