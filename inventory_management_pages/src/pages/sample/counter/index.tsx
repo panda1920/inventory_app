@@ -1,3 +1,5 @@
+import { GetServerSideProps } from 'next'
+
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { fetchCount, getCurrentCount, incrementAction } from '@/store/slice/counter'
 
@@ -17,3 +19,11 @@ export default function Counter() {
     </section>
   )
 }
+
+export const getServerSideProps = (async (context) => {
+  context.res.setHeader('Set-Cookie', 'token=123')
+
+  return {
+    props: {},
+  }
+}) satisfies GetServerSideProps
