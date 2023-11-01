@@ -1,4 +1,5 @@
 import { GetServerSideProps } from 'next'
+import Link from 'next/link'
 
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { fetchCount, getCurrentCount, incrementAction } from '@/store/slice/counter'
@@ -16,6 +17,7 @@ export default function Counter() {
       {status === 'pending' ? <div>Loading</div> : <div>Counter: {count}</div>}
       <button onClick={increment}>increment</button>
       <button onClick={asyncGet}>async get</button>
+      <Link href='/sample'>Sample</Link>
     </section>
   )
 }
