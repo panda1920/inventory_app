@@ -1,11 +1,13 @@
 import { createTheme, ThemeProvider } from '@mui/material'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
-import { StrictMode } from 'react'
+import { StrictMode, useEffect } from 'react'
 import { Provider as ReduxProvider } from 'react-redux'
 
 import Header from '@/components/header/header'
-import { createStore } from '@/store/store'
+import { cookieNames, getCookie } from '@/helper/cookies'
+import { login } from '@/store/slice/user'
+import store from '@/store/store'
 import '@/styles/globals.css'
 
 const customTheme = createTheme({
@@ -21,7 +23,13 @@ const customTheme = createTheme({
 
 export default function App({ Component, pageProps }: AppProps) {
   const { token, ...restProps } = pageProps
-  const store = createStore(token ?? null)
+
+  useEffect(() => {
+    const token = getCookie(cookieNames.tokenCookie)
+    token && store.dispatch(login(token))
+  }, [])
+
+  console.log('rerendering app!')
 
   return (
     <StrictMode>
