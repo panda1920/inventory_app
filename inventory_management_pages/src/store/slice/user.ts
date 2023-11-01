@@ -1,31 +1,27 @@
-import { createAction, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
-import { eraseCookie, setCookie } from '@/helper/cookies'
 import type { RootState } from '@/store/store'
 
 type UserState = {
   token: string | null
 }
 
-export const loginAction = createAction<string>('user/login')
-export const logoutAction = createAction('user/logout')
-
-export function createUserSlice(initialState: UserState) {
-  return createSlice({
-    name: 'user',
-    initialState,
-    reducers: {},
-    extraReducers(builder) {
-      builder.addCase(loginAction, (state, action) => {
-        state.token = action.payload
-        setCookie('token', action.payload)
-      })
-      builder.addCase(logoutAction, (state) => {
-        state.token = null
-        eraseCookie('token')
-      })
+const userSlice = createSlice({
+  name: 'user',
+  initialState: { token: null } as UserState,
+  reducers: {
+    login(state, action: PayloadAction<string>) {
+      // TODO: login may become async function
+      state.token = action.payload
     },
-  })
-}
+    logout(state) {
+      state.token = null
+    },
+  },
+})
+
+export default userSlice
+
+export const { login, logout } = userSlice.actions
 
 export const checkLogin = (state: RootState) => !!state.user.token
