@@ -4,6 +4,15 @@ import jwt from 'jsonwebtoken'
 const secret = 'secret'
 
 /**
+ * Creates a JWT from given payload
+ * Expires in 30 days
+ * @param payload
+ */
+export function signToken(payload: any) {
+  return jwt.sign(payload, secret, { expiresIn: '30d' })
+}
+
+/**
  * Verify token signature and its content
  * @param token
  */

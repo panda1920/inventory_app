@@ -6,7 +6,7 @@ import { Provider as ReduxProvider } from 'react-redux'
 
 import Header from '@/components/header/header'
 import { cookieNames, getCookie } from '@/helper/cookies'
-import { login } from '@/store/slice/user'
+import { loginAction } from '@/store/slice/user'
 import store from '@/store/store'
 import '@/styles/globals.css'
 
@@ -26,7 +26,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     const token = getCookie(cookieNames.tokenCookie)
-    token && store.dispatch(login(token))
+    token && store.dispatch(loginAction(token))
   }, [])
 
   console.log('rerendering app!')
