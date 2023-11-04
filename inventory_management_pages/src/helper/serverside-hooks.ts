@@ -25,11 +25,14 @@ export function withServerSideHooks<T extends object>(serversidePropsFunc: GetSe
 
 function invalidateSession(context: GetServerSidePropsContext) {
   const { [cookieNames.tokenCookie]: token } = context.req.cookies
+  console.log('🚀 ~ file: serverside-hooks.ts:28 ~ invalidateSession ~ token:', token)
   if (!token) return
 
   try {
     verifyToken(token)
   } catch (e) {
+    console.log('🚀 ~ file: serverside-hooks.ts:34 ~ invalidateSession ~ e:', e)
+    console.log('####### faild to verify token')
     context.res.setHeader('Set-Cookie', eraseCookieString(cookieNames.tokenCookie))
   }
 }

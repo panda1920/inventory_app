@@ -29,8 +29,6 @@ export default function App({ Component, pageProps }: AppProps) {
     token && store.dispatch(loginAction(token))
   }, [])
 
-  console.log('rerendering app!')
-
   return (
     <StrictMode>
       <ReduxProvider store={store}>

@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-// TODO: make it environment variable
-const secret = 'secret'
+const secret = process.env.TOKEN_SECRET || ''
 
 /**
  * Creates a JWT from given payload
