@@ -12,7 +12,7 @@ import { verifyToken } from '@/helper/jwt'
 export function withServerSideHooks<T extends object>(serversidePropsFunc: GetServerSideProps<T>) {
   return (async (context) => {
     // do something before here
-    invalidateSession(context)
+    // invalidateSession(context)
 
     // execute getServerSideProps()
     const returnValue = await serversidePropsFunc(context)
@@ -23,7 +23,7 @@ export function withServerSideHooks<T extends object>(serversidePropsFunc: GetSe
   }) satisfies GetServerSideProps
 }
 
-function invalidateSession(context: GetServerSidePropsContext) {
+export function invalidateSession(context: GetServerSidePropsContext) {
   const { [cookieNames.tokenCookie]: token } = context.req.cookies
   console.log('🚀 ~ file: serverside-hooks.ts:28 ~ invalidateSession ~ token:', token)
   if (!token) return

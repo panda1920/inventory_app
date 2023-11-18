@@ -1,24 +1,24 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
-import { cookieNames, eraseCookie, setCookie } from '@/helper/cookies'
 import type { RootState } from '@/store/store'
 
 type UserState = {
-  token: string | null
+  isLoggedIn: boolean
+  username?: string
 }
 
 const userSlice = createSlice({
   name: 'user',
-  initialState: { token: null } as UserState,
+  initialState: { isLoggedIn: false } as UserState,
   reducers: {
-    login(state, action: PayloadAction<string>) {
+    login(state, action: PayloadAction<{ username: string }>) {
       // TODO: login may become async function
-      state.token = action.payload
-      setCookie(cookieNames.tokenCookie, action.payload)
+      const { username } = action.payload
+      state.isLoggedIn = true
+      state.username = username
     },
     logout(state) {
-      state.token = null
-      eraseCookie(cookieNames.tokenCookie)
+      state.isLoggedIn = false
     },
   },
 })
@@ -27,4 +27,4 @@ export default userSlice
 
 export const { login: loginAction, logout: logoutAction } = userSlice.actions
 
-export const checkLogin = (state: RootState) => !!state.user.token
+export const checkLogin = (state: RootState) => !!state.user.isLoggedIn

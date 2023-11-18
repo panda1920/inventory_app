@@ -10,6 +10,8 @@ import {
 } from 'firebase/auth'
 
 import { getFirebaseAuth } from '@/helper/firebase'
+import { useAppDispatch } from '@/store/hooks'
+import { loginAction } from '@/store/slice/user'
 
 type SigninModalProps = {
   isOpen: boolean
@@ -17,6 +19,8 @@ type SigninModalProps = {
 }
 
 export default function SigninModal({ isOpen, close }: SigninModalProps) {
+  const dispatch = useAppDispatch()
+
   const googleAuthHandler = async () => {
     const auth = getFirebaseAuth()
     auth.signOut()
@@ -30,6 +34,10 @@ export default function SigninModal({ isOpen, close }: SigninModalProps) {
       console.log('🚀 ~ file: signin-modal.tsx:20 ~ googleAuthHandler ~ result:', result)
       const uid = result.user.uid
       console.log('🚀 ~ file: signin-modal.tsx:30 ~ googleAuthHandler ~ uid:', uid)
+      const idToken = await result.user.getIdToken()
+      console.log('🚀 ~ file: signin-modal.tsx:34 ~ googleAuthHandler ~ idToken:', idToken)
+
+      await sendToken(idToken)
     } catch (e) {
       console.error(e)
       close()
@@ -51,6 +59,23 @@ export default function SigninModal({ isOpen, close }: SigninModalProps) {
       console.error(e)
       close()
     }
+  }
+
+  async function sendToken(token: string) {
+    const url = '/api/login'
+    const options: RequestInit = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ token }),
+    }
+
+    const response = await fetch(url, options)
+    if (!response.ok) return
+    const responseJson = await response.json()
+
+    dispatch(loginAction({ username: responseJson.username }))
   }
 
   return (
