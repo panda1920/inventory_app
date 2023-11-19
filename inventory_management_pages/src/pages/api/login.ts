@@ -1,11 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
-import { setCookieString } from '@/helper/cookies'
+import { commonApiHandler as createCommonApiHandler } from '@/helper/api'
+import { cookieNames, setCookieString } from '@/helper/cookies'
+import { InventoryAppServerError } from '@/helper/errors'
 import { auth } from '@/helper/firebase-admin'
 
 type SuccessResponseData = {
   success: true
-  username: string
 }
 
 type FailResponseData = {
@@ -15,27 +16,30 @@ type FailResponseData = {
 
 type Data = SuccessResponseData | FailResponseData
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  const token = req.body.token
-  if (!token) return res.status(400).json({ success: false })
+const handlers = {
+  POST: async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+    const token = req.body.token
+    if (!token) return res.status(400).json({ success: false })
 
-  try {
-    const decoded = await auth.verifyIdToken(token, true)
-    console.log('🚀 ~ file: login.ts:23 ~ handler ~ decoded:', decoded)
+    // verify token
+    try {
+      await auth.verifyIdToken(token, true)
+    } catch (e) {
+      throw new InventoryAppServerError('Token verification failed', 401)
+    }
+    // const user = await auth.getUser(decoded.uid)
+    // console.log('🚀 ~ file: login.ts:27 ~ handler ~ user:', user)
 
-    const user = await auth.getUser(decoded.uid)
-    console.log('🚀 ~ file: login.ts:27 ~ handler ~ user:', user)
-
+    // create session cookie
     const cookieValue = await auth.createSessionCookie(token, {
       expiresIn: 1000 * 60 * 60 * 24 * 14, // 2 weeks, in milliseconds
     })
 
-    res.setHeader('Set-Cookie', setCookieString('token', cookieValue))
+    res
+      .setHeader('Set-Cookie', setCookieString(cookieNames.sessionCookie, cookieValue))
+      .status(200)
+      .json({ success: true })
+  },
+} as const
 
-    // const response = await signInWithEmailAndPassword(auth, email, password)
-    res.status(200).json({ success: true, username: user.displayName ?? '' })
-  } catch (e: any) {
-    console.error(e)
-    return res.status(e.error ?? 400).json({ success: false, message: e.message ?? '' })
-  }
-}
+export default createCommonApiHandler(handlers)

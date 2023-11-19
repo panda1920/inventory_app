@@ -22,7 +22,7 @@ export function setCookie(name: CookieName, value: string) {
 }
 
 /**
- * Delete cookie no clientside
+ * Delete cookie on clientside
  * @param name
  */
 export function eraseCookie(name: CookieName) {
@@ -38,12 +38,19 @@ export function eraseCookieString(name: CookieName) {
   return `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`
 }
 
+/**
+ * Create a string used to set a cookie with given value
+ * @param name
+ * @param value
+ * @returns
+ */
 export function setCookieString(name: CookieName, value: string) {
   return `${name}=${value}; Path=/; SameSite=Lax; HttpOnly`
 }
 
 export const cookieNames = {
   tokenCookie: 'token',
+  sessionCookie: 'INVENTORY_APP_SESSSION',
 } as const
 
 export type CookieName = (typeof cookieNames)[keyof typeof cookieNames]
