@@ -2,6 +2,7 @@ import { Box } from '@mui/material'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import {
+  AuthProvider,
   GithubAuthProvider,
   GoogleAuthProvider,
   inMemoryPersistence,
@@ -22,43 +23,40 @@ export default function SigninModal({ isOpen, close }: SigninModalProps) {
   const dispatch = useAppDispatch()
 
   const googleAuthHandler = async () => {
-    const auth = getFirebaseAuth()
-    auth.signOut()
     const provider = new GoogleAuthProvider()
     provider.addScope('profile')
     provider.addScope('email')
-    setPersistence(auth, inMemoryPersistence)
 
+    popupLoginWithProvider(provider)
+  }
+
+  const githubAuthHandler = async () => {
+    const provider = new GithubAuthProvider()
+    provider.addScope('read:user')
+    provider.addScope('user:email')
+
+    popupLoginWithProvider(provider)
+  }
+
+  const popupLoginWithProvider = async (provider: AuthProvider) => {
     try {
-      const result = await signInWithPopup(auth, provider)
-      console.log('🚀 ~ file: signin-modal.tsx:20 ~ googleAuthHandler ~ result:', result)
-      const uid = result.user.uid
-      console.log('🚀 ~ file: signin-modal.tsx:30 ~ googleAuthHandler ~ uid:', uid)
-      const idToken = await result.user.getIdToken()
-      console.log('🚀 ~ file: signin-modal.tsx:34 ~ googleAuthHandler ~ idToken:', idToken)
-
-      await sendToken(idToken)
+      const result = await popupAuthorizationWithProvider(provider)
+      console.log('🚀 ~ file: signin-modal.tsx:56 ~ popupLoginWithProvider ~ result:', result)
+      const response = await sendToken(await result.user.getIdToken())
+      console.log('🚀 ~ file: signin-modal.tsx:58 ~ popupLoginWithProvider ~ response:', response)
+      dispatch(loginAction({ username: result.user.displayName ?? '---' }))
     } catch (e) {
       console.error(e)
       close()
     }
   }
 
-  const githubHandler = async () => {
+  const popupAuthorizationWithProvider = async (provider: AuthProvider) => {
     const auth = getFirebaseAuth()
     auth.signOut()
-    const provider = new GithubAuthProvider()
-    provider.addScope('read:user')
-    provider.addScope('user:email')
     setPersistence(auth, inMemoryPersistence)
 
-    try {
-      const result = await signInWithPopup(auth, provider)
-      console.log('🚀 ~ file: signin-modal.tsx:43 ~ githubHandler ~ result:', result)
-    } catch (e) {
-      console.error(e)
-      close()
-    }
+    return signInWithPopup(auth, provider)
   }
 
   async function sendToken(token: string) {
@@ -72,10 +70,11 @@ export default function SigninModal({ isOpen, close }: SigninModalProps) {
     }
 
     const response = await fetch(url, options)
-    if (!response.ok) return
-    const responseJson = await response.json()
+    if (response.ok) return await response.json()
 
-    dispatch(loginAction({ username: responseJson.username }))
+    console.error(response.body)
+    console.error(response.status)
+    throw Error('Login Failed')
   }
 
   return (
@@ -83,7 +82,7 @@ export default function SigninModal({ isOpen, close }: SigninModalProps) {
       <DialogTitle>Login</DialogTitle>
       <Box>
         <button onClick={googleAuthHandler}>Sign in with Google</button>
-        <button onClick={githubHandler}>Sign in with github</button>
+        <button onClick={githubAuthHandler}>Sign in with github</button>
       </Box>
     </Dialog>
   )
