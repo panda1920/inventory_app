@@ -6,13 +6,14 @@ import { MouseEvent, useState } from 'react'
 
 import SigninModal from '@/components/signin-modal/signin-modal'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { checkLogin, logoutAction } from '@/store/slice/user'
+import { checkLogin, getUsername, logoutAction } from '@/store/slice/user'
 
 export default function Header() {
   const [isLoginOpen, setLoginOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const dispatch = useAppDispatch()
   const isLoggedIn = useAppSelector(checkLogin)
+  const username = useAppSelector(getUsername)
 
   const openMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
@@ -32,6 +33,7 @@ export default function Header() {
       <AppBar position='static'>
         <SyledToolbar>
           <Typography variant='h3'>Header</Typography>
+          {username && <Typography variant='body1'>{username}</Typography>}
           <IconButton aria-label='hamburger-menu' size='medium' onClick={openMenu}>
             <MenuIcon fontSize='inherit' />
           </IconButton>

@@ -1,7 +1,9 @@
-import { GetServerSideProps, GetServerSidePropsContext } from 'next'
+import { UserRecord } from 'firebase-admin/auth'
+import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
 
 import { cookieNames, eraseCookieString } from '@/helper/cookies'
-import { verifyToken } from '@/helper/jwt'
+import { auth } from '@/helper/firebase-admin'
+import { GetServerSidePropsResultWithUserInfo } from '@/types/api'
 
 /**
  * Helps define common operation that needs to take place
@@ -12,27 +14,47 @@ import { verifyToken } from '@/helper/jwt'
 export function withServerSideHooks<T extends object>(serversidePropsFunc: GetServerSideProps<T>) {
   return (async (context) => {
     // do something before here
-    // invalidateSession(context)
+    const claims = await decodeSession(context)
+    const user = claims ? await auth.getUser(claims.uid) : undefined
 
-    // execute getServerSideProps()
-    const returnValue = await serversidePropsFunc(context)
+    // execute route specific getServerSideProps()
+    const propsResult = await serversidePropsFunc(context)
 
     // do something after here
+    const propsResultWithUserInfo = await includeUserInfoToProps(propsResult, user)
 
-    return { ...returnValue }
+    return propsResultWithUserInfo
   }) satisfies GetServerSideProps
 }
 
-export function invalidateSession(context: GetServerSidePropsContext) {
-  const { [cookieNames.tokenCookie]: token } = context.req.cookies
-  console.log('🚀 ~ file: serverside-hooks.ts:28 ~ invalidateSession ~ token:', token)
-  if (!token) return
+export async function decodeSession(context: GetServerSidePropsContext) {
+  const sessionCookie = context.req.cookies[cookieNames.sessionCookie] ?? ''
 
   try {
-    verifyToken(token)
+    return (await auth.verifySessionCookie(sessionCookie, true)) as IdTokenClaim
   } catch (e) {
-    console.log('🚀 ~ file: serverside-hooks.ts:34 ~ invalidateSession ~ e:', e)
-    console.log('####### faild to verify token')
-    context.res.setHeader('Set-Cookie', eraseCookieString(cookieNames.tokenCookie))
+    console.error(e)
+    // invalidate session if failed to verify
+    context.res.setHeader('Set-Cookie', eraseCookieString(cookieNames.sessionCookie))
+    return undefined
   }
+}
+
+export async function includeUserInfoToProps<T>(
+  propsResult: GetServerSidePropsResult<T>,
+  claims?: UserRecord,
+) {
+  // do nothing when session info was not found
+  if (!claims) return propsResult
+  // do nothing when redirect or notfound
+  if ('redirect' in propsResult || 'notFound' in propsResult) return propsResult
+
+  const propsResultWithUserInfo: GetServerSidePropsResultWithUserInfo<T> = {
+    props: {
+      ...(await propsResult.props),
+      user: { uid: claims.uid, username: claims.displayName ?? '' } as UserInfo,
+    },
+  }
+
+  return propsResultWithUserInfo
 }

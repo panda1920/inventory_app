@@ -19,6 +19,7 @@ const userSlice = createSlice({
     },
     logout(state) {
       state.isLoggedIn = false
+      state.username = undefined
     },
   },
 })
@@ -28,3 +29,5 @@ export default userSlice
 export const { login: loginAction, logout: logoutAction } = userSlice.actions
 
 export const checkLogin = (state: RootState) => !!state.user.isLoggedIn
+
+export const getUsername = (state: RootState) => state.user.username

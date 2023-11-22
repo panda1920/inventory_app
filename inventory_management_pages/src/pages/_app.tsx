@@ -5,7 +5,6 @@ import { StrictMode, useEffect } from 'react'
 import { Provider as ReduxProvider } from 'react-redux'
 
 import Header from '@/components/header/header'
-import { cookieNames, getCookie } from '@/helper/cookies'
 import { loginAction } from '@/store/slice/user'
 import store from '@/store/store'
 import '@/styles/globals.css'
@@ -22,11 +21,11 @@ const customTheme = createTheme({
 })
 
 export default function App({ Component, pageProps }: AppProps) {
-  const { token, ...restProps } = pageProps
+  const { user, ...restProps } = pageProps
 
   useEffect(() => {
-    const token = getCookie(cookieNames.tokenCookie)
-    token && store.dispatch(loginAction(token))
+    const { username } = user
+    store.dispatch(loginAction({ username }))
   }, [])
 
   return (
