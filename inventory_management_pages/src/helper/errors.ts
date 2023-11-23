@@ -8,3 +8,9 @@ export class InventoryAppServerError extends Error {
     this.errorCode = errorCode
   }
 }
+
+export class InventoryAppClientError extends Error {
+  constructor(message: string) {
+    super(message)
+  }
+}

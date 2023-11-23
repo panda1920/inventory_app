@@ -24,9 +24,9 @@ export default function App({ Component, pageProps }: AppProps) {
   const { user, ...restProps } = pageProps
 
   useEffect(() => {
-    const { username } = user
-    store.dispatch(loginAction({ username }))
-  }, [])
+    if (!user) return
+    store.dispatch(loginAction({ username: user.username }))
+  })
 
   return (
     <StrictMode>

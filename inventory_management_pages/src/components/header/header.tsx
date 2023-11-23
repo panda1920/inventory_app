@@ -5,6 +5,7 @@ import { styled } from '@mui/material/styles'
 import { MouseEvent, useState } from 'react'
 
 import SigninModal from '@/components/signin-modal/signin-modal'
+import { InventoryAppClientError } from '@/helper/errors'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { checkLogin, getUsername, logoutAction } from '@/store/slice/user'
 
@@ -23,9 +24,33 @@ export default function Header() {
   }
   const login = async () => {
     setLoginOpen(true)
+    closeMenu()
   }
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await logoutAPI()
+    } catch (e) {
+      console.error(e)
+    }
+
     dispatch(logoutAction())
+    closeMenu()
+  }
+
+  async function logoutAPI() {
+    const url = '/api/logout'
+    const options: RequestInit = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+
+    const response = await fetch(url, options)
+    const responseJson = await response.json()
+    if (response.ok) return responseJson
+
+    throw new InventoryAppClientError(responseJson.messasge ?? 'Failed to login')
   }
 
   return (

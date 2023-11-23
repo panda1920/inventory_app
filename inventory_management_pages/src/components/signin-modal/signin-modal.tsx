@@ -27,7 +27,8 @@ export default function SigninModal({ isOpen, close }: SigninModalProps) {
     provider.addScope('profile')
     provider.addScope('email')
 
-    popupLoginWithProvider(provider)
+    await loginWithProvider(provider)
+    close()
   }
 
   const githubAuthHandler = async () => {
@@ -35,23 +36,23 @@ export default function SigninModal({ isOpen, close }: SigninModalProps) {
     provider.addScope('read:user')
     provider.addScope('user:email')
 
-    popupLoginWithProvider(provider)
+    await loginWithProvider(provider)
+    close()
   }
 
-  const popupLoginWithProvider = async (provider: AuthProvider) => {
+  const loginWithProvider = async (provider: AuthProvider) => {
     try {
-      const result = await popupAuthorizationWithProvider(provider)
+      const result = await authorizeWithProvider(provider)
       console.log('🚀 ~ file: signin-modal.tsx:56 ~ popupLoginWithProvider ~ result:', result)
       const response = await sendToken(await result.user.getIdToken())
       console.log('🚀 ~ file: signin-modal.tsx:58 ~ popupLoginWithProvider ~ response:', response)
       dispatch(loginAction({ username: result.user.displayName ?? '---' }))
     } catch (e) {
       console.error(e)
-      close()
     }
   }
 
-  const popupAuthorizationWithProvider = async (provider: AuthProvider) => {
+  const authorizeWithProvider = async (provider: AuthProvider) => {
     const auth = getFirebaseAuth()
     auth.signOut()
     setPersistence(auth, inMemoryPersistence)

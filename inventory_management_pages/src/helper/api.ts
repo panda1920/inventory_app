@@ -29,7 +29,7 @@ function isHttpMethod(method?: string): method is HttpMethod {
   )
 }
 
-export const commonApiHandler = (handlers: HandlerSpecByMethods) => {
+export const createCommonApiHandler = (handlers: HandlerSpecByMethods) => {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       if (!isHttpMethod(req.method)) throw new InventoryAppServerError('Invalid HTTP method', 400)

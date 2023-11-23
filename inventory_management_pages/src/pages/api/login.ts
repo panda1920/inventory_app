@@ -1,18 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
-import { commonApiHandler as createCommonApiHandler } from '@/helper/api'
+import { createCommonApiHandler } from '@/helper/api'
 import { cookieNames, setCookieString } from '@/helper/cookies'
 import { InventoryAppServerError } from '@/helper/errors'
 import { auth } from '@/helper/firebase-admin'
-
-type SuccessResponseData = {
-  success: true
-}
-
-type FailResponseData = {
-  success: false
-  message?: string
-}
+import { FailResponseData, SuccessResponseData } from '@/types/api'
 
 type Data = SuccessResponseData | FailResponseData
 
