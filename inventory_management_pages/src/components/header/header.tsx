@@ -2,6 +2,7 @@ import LoginIcon from '@mui/icons-material/Login'
 import MenuIcon from '@mui/icons-material/Menu'
 import { AppBar, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
+import { useSnackbar } from 'notistack'
 import { MouseEvent, useState } from 'react'
 
 import SigninModal from '@/components/signin-modal/signin-modal'
@@ -15,6 +16,7 @@ export default function Header() {
   const dispatch = useAppDispatch()
   const isLoggedIn = useAppSelector(checkLogin)
   const username = useAppSelector(getUsername)
+  const { enqueueSnackbar } = useSnackbar()
 
   const openMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
@@ -35,6 +37,7 @@ export default function Header() {
 
     dispatch(logoutAction())
     closeMenu()
+    enqueueSnackbar('You are now logged out.', { variant: 'success' })
   }
 
   async function logoutAPI() {

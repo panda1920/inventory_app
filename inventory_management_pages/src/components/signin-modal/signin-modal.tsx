@@ -9,10 +9,19 @@ import {
   setPersistence,
   signInWithPopup,
 } from 'firebase/auth'
+import { useSnackbar } from 'notistack'
 
 import { getFirebaseAuth } from '@/helper/firebase'
 import { useAppDispatch } from '@/store/hooks'
 import { loginAction } from '@/store/slice/user'
+
+const googleAuthProvider = new GoogleAuthProvider()
+googleAuthProvider.addScope('profile')
+googleAuthProvider.addScope('email')
+
+const githubProvider = new GithubAuthProvider()
+githubProvider.addScope('read:user')
+githubProvider.addScope('user:email')
 
 type SigninModalProps = {
   isOpen: boolean
@@ -21,35 +30,20 @@ type SigninModalProps = {
 
 export default function SigninModal({ isOpen, close }: SigninModalProps) {
   const dispatch = useAppDispatch()
-
-  const googleAuthHandler = async () => {
-    const provider = new GoogleAuthProvider()
-    provider.addScope('profile')
-    provider.addScope('email')
-
-    await loginWithProvider(provider)
-    close()
-  }
-
-  const githubAuthHandler = async () => {
-    const provider = new GithubAuthProvider()
-    provider.addScope('read:user')
-    provider.addScope('user:email')
-
-    await loginWithProvider(provider)
-    close()
-  }
+  const { enqueueSnackbar } = useSnackbar()
 
   const loginWithProvider = async (provider: AuthProvider) => {
     try {
       const result = await authorizeWithProvider(provider)
-      console.log('🚀 ~ file: signin-modal.tsx:56 ~ popupLoginWithProvider ~ result:', result)
-      const response = await sendToken(await result.user.getIdToken())
-      console.log('🚀 ~ file: signin-modal.tsx:58 ~ popupLoginWithProvider ~ response:', response)
+      await sendToken(await result.user.getIdToken())
       dispatch(loginAction({ username: result.user.displayName ?? '---' }))
+      enqueueSnackbar('You are now logged in.', { variant: 'success' })
     } catch (e) {
       console.error(e)
+      enqueueSnackbar('There was an error during login. Please try again.', { variant: 'error' })
     }
+
+    close()
   }
 
   const authorizeWithProvider = async (provider: AuthProvider) => {
@@ -82,8 +76,8 @@ export default function SigninModal({ isOpen, close }: SigninModalProps) {
     <Dialog open={isOpen} onClose={close}>
       <DialogTitle>Login</DialogTitle>
       <Box>
-        <button onClick={googleAuthHandler}>Sign in with Google</button>
-        <button onClick={githubAuthHandler}>Sign in with github</button>
+        <button onClick={() => loginWithProvider(googleAuthProvider)}>Sign in with Google</button>
+        <button onClick={() => loginWithProvider(githubProvider)}>Sign in with github</button>
       </Box>
     </Dialog>
   )
