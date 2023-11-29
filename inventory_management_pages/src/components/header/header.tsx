@@ -53,7 +53,7 @@ export default function Header() {
     const responseJson = await response.json()
     if (response.ok) return responseJson
 
-    throw new InventoryAppClientError(responseJson.messasge ?? 'Failed to login')
+    throw new InventoryAppClientError(responseJson.messasge ?? 'Error during logout')
   }
 
   return (

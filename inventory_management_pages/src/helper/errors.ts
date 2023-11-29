@@ -1,6 +1,14 @@
-export class InventoryAppServerError extends Error {
-  // TODO: super and inheritance
-  // https://stackoverflow.com/questions/41102060/typescript-extending-error-class
+export class InventoryAppBaseError extends Error {
+  constructor(...args: any[]) {
+    super(...args)
+
+    // https://stackoverflow.com/questions/41102060/typescript-extending-error-class
+    this.name = new.target.name
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+
+export class InventoryAppServerError extends InventoryAppBaseError {
   errorCode: number
 
   constructor(message: string, errorCode: number = 400) {
@@ -9,8 +17,4 @@ export class InventoryAppServerError extends Error {
   }
 }
 
-export class InventoryAppClientError extends Error {
-  constructor(message: string) {
-    super(message)
-  }
-}
+export class InventoryAppClientError extends InventoryAppBaseError {}

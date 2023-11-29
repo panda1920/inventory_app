@@ -11,6 +11,7 @@ import {
 } from 'firebase/auth'
 import { useSnackbar } from 'notistack'
 
+import { InventoryAppClientError } from '@/helper/errors'
 import { getFirebaseAuth } from '@/helper/firebase'
 import { useAppDispatch } from '@/store/hooks'
 import { loginAction } from '@/store/slice/user'
@@ -69,7 +70,7 @@ export default function SigninModal({ isOpen, close }: SigninModalProps) {
 
     console.error(response.body)
     console.error(response.status)
-    throw Error('Login Failed')
+    throw new InventoryAppClientError('Login Failed')
   }
 
   return (
