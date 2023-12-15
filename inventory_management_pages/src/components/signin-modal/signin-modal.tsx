@@ -2,6 +2,7 @@ import { Box } from '@mui/material'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import {
+  AuthCredential,
   AuthError,
   GithubAuthProvider,
   GoogleAuthProvider,
@@ -15,16 +16,12 @@ import {
   signInWithPopup,
 } from 'firebase/auth'
 import { useSnackbar } from 'notistack'
+import { useState } from 'react'
 
 import { InventoryAppClientError } from '@/helper/errors'
 import { getFirebaseAuth } from '@/helper/firebase'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import {
-  clearCredentialAction,
-  getTemporaryCredential,
-  loginAction,
-  saveCredentialAction,
-} from '@/store/slice/user'
+import { getTemporaryCredential, loginAction } from '@/store/slice/user'
 
 type SigninModalProps = {
   isOpen: boolean
@@ -34,6 +31,7 @@ type SigninModalProps = {
 export default function SigninModal({ isOpen, close }: SigninModalProps) {
   const dispatch = useAppDispatch()
   const { enqueueSnackbar } = useSnackbar()
+  const [temporaryAuthCredential, setTemporaryAuthCredential] = useState<AuthCredential>()
   const temporaryCredential = useAppSelector(getTemporaryCredential)
 
   const loginWithCredential = async (authorizeForCredential: () => Promise<UserCredential>) => {
@@ -65,12 +63,13 @@ export default function SigninModal({ isOpen, close }: SigninModalProps) {
     dispatch(loginAction({ username: credential.user.displayName ?? '---' }))
     toastLoginSuccess()
 
-    if (!temporaryCredential) return
+    if (!temporaryAuthCredential) return
+
+    // link credential if user attempted to login with other login methods
     try {
-      // link credential if user attempted to login with other login methods
-      await linkWithCredential(credential.user, temporaryCredential)
+      await linkWithCredential(credential.user, temporaryAuthCredential)
       toastLinkingSuccess()
-      dispatch(clearCredentialAction())
+      setTemporaryAuthCredential(undefined)
     } catch (e) {
       console.error(e)
     }
@@ -81,7 +80,7 @@ export default function SigninModal({ isOpen, close }: SigninModalProps) {
 
     try {
       if (!credential) throw new InventoryAppClientError('Login error')
-      dispatch(saveCredentialAction({ credential }))
+      setTemporaryAuthCredential(credential)
       toastSigninWithOtherMethods()
     } catch (e) {
       console.error(e)
