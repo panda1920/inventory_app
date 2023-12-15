@@ -19,5 +19,7 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  // workaround https://github.com/rt2zz/redux-persist/issues/1166
+  "files": ["./node_modules/redux-persist/types/integration/react.d.ts"]
 }

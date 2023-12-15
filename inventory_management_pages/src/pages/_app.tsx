@@ -4,10 +4,11 @@ import Head from 'next/head'
 import { SnackbarProvider } from 'notistack'
 import { StrictMode, useEffect } from 'react'
 import { Provider as ReduxProvider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
 
 import Header from '@/components/header/header'
 import { loginAction } from '@/store/slice/user'
-import store from '@/store/store'
+import store, { persistor } from '@/store/store'
 import '@/styles/globals.css'
 
 const customTheme = createTheme({
@@ -32,20 +33,22 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <StrictMode>
       <ReduxProvider store={store}>
-        <SnackbarProvider
-          maxSnack={3}
-          autoHideDuration={5000}
-          anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-          preventDuplicate
-        >
-          <ThemeProvider theme={customTheme}>
-            <Head>
-              <meta name='viewport' content='initial-scale=1, width=device-width' />
-            </Head>
-            <Header />
-            <Component {...restProps} />
-          </ThemeProvider>
-        </SnackbarProvider>
+        <PersistGate loading={null} persistor={persistor}>
+          <SnackbarProvider
+            maxSnack={3}
+            autoHideDuration={5000}
+            anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+            preventDuplicate
+          >
+            <ThemeProvider theme={customTheme}>
+              <Head>
+                <meta name='viewport' content='initial-scale=1, width=device-width' />
+              </Head>
+              <Header />
+              <Component {...restProps} />
+            </ThemeProvider>
+          </SnackbarProvider>
+        </PersistGate>
       </ReduxProvider>
     </StrictMode>
   )
