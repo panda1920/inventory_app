@@ -7,11 +7,10 @@ import {
   GithubAuthProvider,
   GoogleAuthProvider,
   OAuthProvider,
+  ProviderId,
   UserCredential,
-  inMemoryPersistence,
   linkWithCredential,
   sendEmailVerification,
-  setPersistence,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from 'firebase/auth'
@@ -19,9 +18,9 @@ import { useSnackbar } from 'notistack'
 import { useState } from 'react'
 
 import { InventoryAppClientError } from '@/helper/errors'
-import { getFirebaseAuth } from '@/helper/firebase'
-import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { getTemporaryCredential, loginAction } from '@/store/slice/user'
+import { getInitializedFirebaseAuth } from '@/helper/firebase'
+import { useAppDispatch } from '@/store/hooks'
+import { loginAction, saveTemporaryCredentialAction } from '@/store/slice/user'
 
 type SigninModalProps = {
   isOpen: boolean
@@ -32,20 +31,13 @@ export default function SigninModal({ isOpen, close }: SigninModalProps) {
   const dispatch = useAppDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const [temporaryAuthCredential, setTemporaryAuthCredential] = useState<AuthCredential>()
-  const temporaryCredential = useAppSelector(getTemporaryCredential)
 
   const loginWithCredential = async (authorizeForCredential: () => Promise<UserCredential>) => {
     try {
       const result = await authorizeForCredential()
 
-      // if credential is coming from an unverified source, force verification
-      if (!result.user.emailVerified) {
-        toastVerifyEmail()
-        return sendEmailVerification(result.user)
-      }
-
-      // otherwise just login to backen
-      await loginToBackend(result)
+      if (!result.user.emailVerified) await promptAccountVerification(result)
+      else await loginToBackend(result)
     } catch (e: any) {
       console.error(e)
       // found an existing account using different credential
@@ -56,6 +48,17 @@ export default function SigninModal({ isOpen, close }: SigninModalProps) {
     }
 
     close()
+  }
+
+  async function promptAccountVerification(credential: UserCredential) {
+    toastVerifyEmail()
+    sendEmailVerification(credential.user, { handleCodeInApp: false, url: window.location.href })
+    if (credential.providerId === ProviderId.PASSWORD) return
+
+    // save credential so it can be used to auto login after verification
+    const providerCredential = OAuthProvider.credentialFromResult(credential)
+    if (providerCredential)
+      dispatch(saveTemporaryCredentialAction({ credential: providerCredential }))
   }
 
   async function loginToBackend(credential: UserCredential) {
@@ -150,15 +153,10 @@ export default function SigninModal({ isOpen, close }: SigninModalProps) {
 
 const googleAuthProvider = new GoogleAuthProvider()
 const githubProvider = new GithubAuthProvider()
-const initializeAuth = () => {
-  const auth = getFirebaseAuth()
-  auth.signOut()
-  setPersistence(auth, inMemoryPersistence)
-
-  return auth
-}
 
 const authorizeWithEmail = async () =>
-  signInWithEmailAndPassword(initializeAuth(), 'korean.panda@gmail.com', 'password')
-const authorizeWithGithub = async () => signInWithPopup(initializeAuth(), githubProvider)
-const authorizeWithGoogle = async () => signInWithPopup(initializeAuth(), googleAuthProvider)
+  signInWithEmailAndPassword(getInitializedFirebaseAuth(), 'korean.panda@gmail.com', 'password')
+const authorizeWithGithub = async () =>
+  signInWithPopup(getInitializedFirebaseAuth(), githubProvider)
+const authorizeWithGoogle = async () =>
+  signInWithPopup(getInitializedFirebaseAuth(), googleAuthProvider)

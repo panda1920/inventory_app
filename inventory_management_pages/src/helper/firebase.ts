@@ -1,5 +1,5 @@
 import { getApp, getApps, initializeApp } from 'firebase/app'
-import { getAuth } from 'firebase/auth'
+import { getAuth, inMemoryPersistence, setPersistence } from 'firebase/auth'
 
 export function getFirebaseApp() {
   return getApps().length === 0
@@ -17,4 +17,12 @@ export function getFirebaseApp() {
 
 export function getFirebaseAuth() {
   return getAuth(getFirebaseApp())
+}
+
+export function getInitializedFirebaseAuth() {
+  const auth = getFirebaseAuth()
+  auth.signOut()
+  setPersistence(auth, inMemoryPersistence)
+
+  return auth
 }

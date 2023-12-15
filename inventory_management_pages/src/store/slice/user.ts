@@ -1,12 +1,12 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { UserCredential } from 'firebase/auth'
+import { AuthCredential, OAuthProvider } from 'firebase/auth'
 
 import type { RootState } from '@/store/store'
 
 type UserState = {
   isLoggedIn: boolean
   username?: string
-  temporaryCredential?: UserCredential
+  temporaryCredential?: string
 }
 
 const userSlice = createSlice({
@@ -23,9 +23,8 @@ const userSlice = createSlice({
       state.isLoggedIn = false
       state.username = undefined
     },
-    saveTemporaryCredential(state, action: PayloadAction<{ credential: UserCredential }>) {
-      // state.temporaryCredential = JSON.stringify(action.payload.credential)
-      state.temporaryCredential = action.payload.credential
+    saveTemporaryCredential(state, action: PayloadAction<{ credential: AuthCredential }>) {
+      state.temporaryCredential = JSON.stringify(action.payload.credential.toJSON())
     },
     clearTemporaryCredential(state) {
       state.temporaryCredential = undefined
@@ -46,8 +45,7 @@ export const {
 // selectors
 export const checkLogin = (state: RootState) => !!state.user.isLoggedIn
 export const getUsername = (state: RootState) => state.user.username
-// export const getTemporaryCredential = (state: RootState) =>
-//   state.user.temporaryCredential
-//     ? (JSON.parse(state.user.temporaryCredential) as UserCredential)
-//     : undefined
-export const getTemporaryCredential = (state: RootState) => state.user.temporaryCredential
+export const getTemporaryCredential = (state: RootState) =>
+  state.user.temporaryCredential
+    ? OAuthProvider.credentialFromJSON(state.user.temporaryCredential)
+    : undefined
