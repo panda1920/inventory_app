@@ -9,6 +9,7 @@ import { useEffect } from 'react'
 import { InventoryAppClientError } from '@/helper/errors'
 import { getFirebaseAuth, getInitializedFirebaseAuth } from '@/helper/firebase'
 import { withServerSideHooks } from '@/helper/serverside-hooks'
+import { useAuth } from '@/hooks/auth'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { clearTemporaryCredentialAction, getTemporaryCredential } from '@/store/slice/user'
 
@@ -28,6 +29,7 @@ export default function Auth() {
   const { enqueueSnackbar } = useSnackbar()
   const dispatch = useAppDispatch()
   const temporaryCredential = useAppSelector(getTemporaryCredential)
+  const { loginWithCredential } = useAuth()
 
   useEffect(() => {
     const handleEmailAction = async () => {
@@ -39,17 +41,17 @@ export default function Auth() {
         const { mode, oobCode, continueUrl } = router.query
 
         if (mode === 'verifyEmail') {
-          // TODO: think about delegating this whole chunk to a hook
           // TODO: think about how to verify email login accounts
           // verify code
           await applyActionCode(getFirebaseAuth(), oobCode as string)
           toastAccountVerified()
 
-          // TODO: need to login to backend as well
+          // recover temporary credential and automatically login
           if (temporaryCredential) {
-            await signInWithCredential(getInitializedFirebaseAuth(), temporaryCredential)
+            loginWithCredential(() =>
+              signInWithCredential(getInitializedFirebaseAuth(), temporaryCredential),
+            )
             dispatch(clearTemporaryCredentialAction())
-            toastLoginSuccess()
           }
 
           router.push(continueUrl as string)
@@ -66,9 +68,6 @@ export default function Auth() {
 
   function toastAccountVerified() {
     enqueueSnackbar('Your account has been verified.', { variant: 'success' })
-  }
-  function toastLoginSuccess() {
-    enqueueSnackbar('You are now logged in.', { variant: 'success' })
   }
 
   return <CircularProgress />
