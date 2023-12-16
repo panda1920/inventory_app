@@ -11,7 +11,9 @@ import { GetServerSidePropsResultWithUserInfo } from '@/types/api'
  * @param serversidePropsFunc
  * @returns
  */
-export function withServerSideHooks<T extends object>(serversidePropsFunc: GetServerSideProps<T>) {
+export function withServerSideHooks<T extends object>(
+  serversidePropsFunc: GetServerSideProps<T> = emptyProps<T>,
+) {
   return (async (context) => {
     // do something before here
     const claims = await decodeSession(context)
@@ -27,7 +29,13 @@ export function withServerSideHooks<T extends object>(serversidePropsFunc: GetSe
   }) satisfies GetServerSideProps
 }
 
-export async function decodeSession(context: GetServerSidePropsContext) {
+async function emptyProps<T extends object>() {
+  return {
+    props: {} as T,
+  }
+}
+
+async function decodeSession(context: GetServerSidePropsContext) {
   const sessionCookie = context.req.cookies[cookieNames.sessionCookie] ?? ''
 
   try {
@@ -40,7 +48,7 @@ export async function decodeSession(context: GetServerSidePropsContext) {
   }
 }
 
-export async function includeUserInfoToProps<T>(
+async function includeUserInfoToProps<T>(
   propsResult: GetServerSidePropsResult<T>,
   claims?: UserRecord,
 ) {

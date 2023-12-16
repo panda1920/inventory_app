@@ -98,4 +98,4 @@ function isValidFirebaseAuthEmailHandlerParams(
   return true
 }
 
-export const getServerSideProps = withServerSideHooks(async () => ({ props: {} }))
+export const getServerSideProps = withServerSideHooks()

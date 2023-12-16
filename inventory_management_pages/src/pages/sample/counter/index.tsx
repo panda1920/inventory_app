@@ -22,4 +22,4 @@ export default function Counter() {
   )
 }
 
-export const getServerSideProps = withServerSideHooks(async () => ({ props: {} }))
+export const getServerSideProps = withServerSideHooks()
