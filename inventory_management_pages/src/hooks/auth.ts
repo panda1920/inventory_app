@@ -4,33 +4,44 @@ import {
   GithubAuthProvider,
   GoogleAuthProvider,
   OAuthProvider,
-  ProviderId,
   User,
   UserCredential,
+  browserLocalPersistence,
   linkWithCredential,
   sendEmailVerification,
   signInWithEmailAndPassword,
   signInWithPopup,
+  signOut,
 } from 'firebase/auth'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
 
 import { InventoryAppClientError } from '@/helper/errors'
-import { getInitializedFirebaseAuth } from '@/helper/firebase'
+import { getFirebaseAuth, getInitializedFirebaseAuth } from '@/helper/firebase'
 import { useAppDispatch } from '@/store/hooks'
-import { loginAction, saveTemporaryCredentialAction } from '@/store/slice/user'
+import { loginAction } from '@/store/slice/user'
 
 export function useAuth(afterLoginAction?: () => void) {
   const dispatch = useAppDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const [temporaryAuthCredential, setTemporaryAuthCredential] = useState<AuthCredential>()
 
+  // exposed functions
   const loginWithEmail = (email: string, password: string) => () =>
     loginWithCredential(authorizeWithEmail(email, password))
+
   const loginWithGoogle = () => loginWithCredential(authorizeWithGoogle)
+
   const loginWithGithub = () => loginWithCredential(authorizeWithGithub)
 
-  const loginWithCredential = async (authorizeForCredential: () => Promise<UserCredential>) => {
+  async function loginToBackend(user: User) {
+    await sendToken(await user.getIdToken())
+    await signOut(getFirebaseAuth())
+    dispatch(loginAction({ username: user.displayName ?? '---' }))
+    toastLoginSuccess()
+  }
+
+  async function loginWithCredential(authorizeForCredential: () => Promise<UserCredential>) {
     try {
       const result = await authorizeForCredential()
 
@@ -55,18 +66,8 @@ export function useAuth(afterLoginAction?: () => void) {
   async function promptAccountVerification(credential: UserCredential) {
     toastVerifyEmail()
     sendEmailVerification(credential.user, { handleCodeInApp: false, url: window.location.href })
-    if (credential.providerId === ProviderId.PASSWORD) return
-
-    // save credential so it can be used to auto login after verification
-    const providerCredential = OAuthProvider.credentialFromResult(credential)
-    if (providerCredential)
-      dispatch(saveTemporaryCredentialAction({ credential: providerCredential }))
-  }
-
-  async function loginToBackend(user: User) {
-    await sendToken(await user.getIdToken())
-    dispatch(loginAction({ username: user.displayName ?? '---' }))
-    toastLoginSuccess()
+    // make sure login state is persisted so it can be used later for verification process
+    await getFirebaseAuth().setPersistence(browserLocalPersistence)
   }
 
   async function linkTemporaryCredential(user: User) {
@@ -127,11 +128,11 @@ export function useAuth(afterLoginAction?: () => void) {
     loginWithEmail,
     loginWithGoogle,
     loginWithGithub,
-    loginWithCredential,
+    loginToBackend,
   }
 }
 
-// function independant data+functions
+// independant data+functions
 const googleAuthProvider = new GoogleAuthProvider()
 const githubProvider = new GithubAuthProvider()
 

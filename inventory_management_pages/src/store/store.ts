@@ -19,7 +19,7 @@ const persistConfig = {
   key: 'root-store',
   storage,
   debug: process.env.NODE_ENV !== 'production',
-  // blackList: ['user'],
+  blacklist: ['user'],
 }
 
 const persistedReducer = persistReducer(
@@ -34,15 +34,7 @@ const store = configureStore({
     return getDefaultMiddleware({
       // https://redux-toolkit.js.org/usage/usage-guide#working-with-non-serializable-data
       serializableCheck: {
-        ignoredActions: [
-          'user/saveTemporaryCredential',
-          FLUSH,
-          REHYDRATE,
-          PAUSE,
-          PERSIST,
-          PURGE,
-          REGISTER,
-        ],
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     })
   },

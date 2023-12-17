@@ -1,17 +1,15 @@
 import { ParsedUrlQuery } from 'querystring'
 
 import { CircularProgress } from '@mui/material'
-import { applyActionCode, signInWithCredential } from 'firebase/auth'
+import { applyActionCode } from 'firebase/auth'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import { useEffect } from 'react'
 
 import { InventoryAppClientError } from '@/helper/errors'
-import { getFirebaseAuth, getInitializedFirebaseAuth } from '@/helper/firebase'
+import { getFirebaseAuth } from '@/helper/firebase'
 import { withServerSideHooks } from '@/helper/serverside-hooks'
 import { useAuth } from '@/hooks/auth'
-import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { clearTemporaryCredentialAction, getTemporaryCredential } from '@/store/slice/user'
 
 type FirebaseAuthEmailHandlerParams = {
   mode: 'resetPassword' | 'recoverEmail' | 'verifyEmail'
@@ -27,9 +25,7 @@ type FirebaseAuthEmailHandlerParams = {
 export default function Auth() {
   const router = useRouter()
   const { enqueueSnackbar } = useSnackbar()
-  const dispatch = useAppDispatch()
-  const temporaryCredential = useAppSelector(getTemporaryCredential)
-  const { loginWithCredential } = useAuth()
+  const { loginToBackend } = useAuth()
 
   useEffect(() => {
     const handleEmailAction = async () => {
@@ -46,13 +42,9 @@ export default function Auth() {
           await applyActionCode(getFirebaseAuth(), oobCode as string)
           toastAccountVerified()
 
-          // recover temporary credential and automatically login
-          if (temporaryCredential) {
-            loginWithCredential(() =>
-              signInWithCredential(getInitializedFirebaseAuth(), temporaryCredential),
-            )
-            dispatch(clearTemporaryCredentialAction())
-          }
+          // automatically login as persisted user
+          const persistedUser = getFirebaseAuth().currentUser
+          if (persistedUser) await loginToBackend(persistedUser)
 
           router.push(continueUrl as string)
         }
