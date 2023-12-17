@@ -19,9 +19,14 @@ import { useState } from 'react'
 import { InventoryAppClientError } from '@/helper/errors'
 import { getFirebaseAuth, getInitializedFirebaseAuth } from '@/helper/firebase'
 import { useAppDispatch } from '@/store/hooks'
-import { loginAction } from '@/store/slice/user'
+import { loginAction, logoutAction } from '@/store/slice/user'
 
-export function useAuth(afterLoginAction?: () => void) {
+type UseAuthParams = {
+  afterLoginAction?: () => void
+  afterLogoutAction?: () => void
+}
+
+export function useAuth(params?: UseAuthParams) {
   const dispatch = useAppDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const [temporaryAuthCredential, setTemporaryAuthCredential] = useState<AuthCredential>()
@@ -41,6 +46,19 @@ export function useAuth(afterLoginAction?: () => void) {
     toastLoginSuccess()
   }
 
+  async function logoutFromBackend() {
+    try {
+      await logout()
+    } catch (e) {
+      console.error(e)
+    }
+
+    dispatch(logoutAction())
+    toastLogoutSuccess()
+    params?.afterLogoutAction?.()
+  }
+
+  // unexposed implmentation detail
   async function loginWithCredential(authorizeForCredential: () => Promise<UserCredential>) {
     try {
       const result = await authorizeForCredential()
@@ -60,7 +78,7 @@ export function useAuth(afterLoginAction?: () => void) {
       toastGenericLoginError()
     }
 
-    afterLoginAction && afterLoginAction()
+    params?.afterLoginAction?.()
   }
 
   async function promptAccountVerification(credential: UserCredential) {
@@ -123,12 +141,16 @@ export function useAuth(afterLoginAction?: () => void) {
   function toastGenericLoginError() {
     enqueueSnackbar('There was an error during login.\nPlease try again.', { variant: 'error' })
   }
+  function toastLogoutSuccess() {
+    enqueueSnackbar('You are now logged out.', { variant: 'success' })
+  }
 
   return {
     loginWithEmail,
     loginWithGoogle,
     loginWithGithub,
     loginToBackend,
+    logoutFromBackend,
   }
 }
 
@@ -160,4 +182,19 @@ async function sendToken(token: string) {
   console.error(response.body)
   console.error(response.status)
   throw new InventoryAppClientError('Login Failed')
+}
+async function logout() {
+  const url = '/api/logout'
+  const options: RequestInit = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }
+
+  const response = await fetch(url, options)
+  const responseJson = await response.json()
+  if (response.ok) return responseJson
+
+  throw new InventoryAppClientError(responseJson.messasge ?? 'Error during logout')
 }

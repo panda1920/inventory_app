@@ -10,7 +10,7 @@ type SigninModalProps = {
 }
 
 export default function SigninModal({ isOpen, close }: SigninModalProps) {
-  const { loginWithEmail, loginWithGoogle, loginWithGithub } = useAuth(close)
+  const { loginWithEmail, loginWithGoogle, loginWithGithub } = useAuth({ afterLoginAction: close })
 
   return (
     <Dialog open={isOpen} onClose={close}>

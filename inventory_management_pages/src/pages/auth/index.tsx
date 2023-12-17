@@ -37,7 +37,6 @@ export default function Auth() {
         const { mode, oobCode, continueUrl } = router.query
 
         if (mode === 'verifyEmail') {
-          // TODO: think about how to verify email login accounts
           // verify code
           await applyActionCode(getFirebaseAuth(), oobCode as string)
           toastAccountVerified()
@@ -46,7 +45,7 @@ export default function Auth() {
           const persistedUser = getFirebaseAuth().currentUser
           if (persistedUser) await loginToBackend(persistedUser)
 
-          router.push(continueUrl as string)
+          return router.push(continueUrl as string)
         }
       } catch (e) {
         console.error(e)

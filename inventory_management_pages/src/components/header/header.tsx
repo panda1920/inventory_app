@@ -2,58 +2,29 @@ import LoginIcon from '@mui/icons-material/Login'
 import MenuIcon from '@mui/icons-material/Menu'
 import { AppBar, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import { useSnackbar } from 'notistack'
 import { MouseEvent, useState } from 'react'
 
 import SigninModal from '@/components/signin-modal/signin-modal'
-import { InventoryAppClientError } from '@/helper/errors'
-import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { checkLogin, getUsername, logoutAction } from '@/store/slice/user'
+import { useAuth } from '@/hooks/auth'
+import { useAppSelector } from '@/store/hooks'
+import { checkLogin, getUsername } from '@/store/slice/user'
 
 export default function Header() {
   const [isLoginOpen, setLoginOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
-  const dispatch = useAppDispatch()
   const isLoggedIn = useAppSelector(checkLogin)
   const username = useAppSelector(getUsername)
-  const { enqueueSnackbar } = useSnackbar()
+  const { logoutFromBackend } = useAuth({ afterLogoutAction: closeMenu })
 
-  const openMenu = (event: MouseEvent<HTMLElement>) => {
+  function openMenu(event: MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget)
   }
-  const closeMenu = () => {
+  function closeMenu() {
     setAnchorEl(null)
   }
-  const login = async () => {
+  async function login() {
     setLoginOpen(true)
     closeMenu()
-  }
-  const logout = async () => {
-    try {
-      await logoutAPI()
-    } catch (e) {
-      console.error(e)
-    }
-
-    dispatch(logoutAction())
-    closeMenu()
-    enqueueSnackbar('You are now logged out.', { variant: 'success' })
-  }
-
-  async function logoutAPI() {
-    const url = '/api/logout'
-    const options: RequestInit = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }
-
-    const response = await fetch(url, options)
-    const responseJson = await response.json()
-    if (response.ok) return responseJson
-
-    throw new InventoryAppClientError(responseJson.messasge ?? 'Error during logout')
   }
 
   return (
@@ -67,7 +38,7 @@ export default function Header() {
           </IconButton>
           <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={closeMenu}>
             {isLoggedIn ? (
-              <StyledMenuItem onClick={logout}>
+              <StyledMenuItem onClick={logoutFromBackend}>
                 <LoginIcon fontSize='medium' />
                 <Typography>Logout</Typography>
               </StyledMenuItem>
