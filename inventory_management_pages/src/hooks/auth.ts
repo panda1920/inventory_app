@@ -7,6 +7,7 @@ import {
   User,
   UserCredential,
   browserLocalPersistence,
+  createUserWithEmailAndPassword,
   linkWithCredential,
   sendEmailVerification,
   signInWithEmailAndPassword,
@@ -32,12 +33,13 @@ export function useAuth(params?: UseAuthParams) {
   const [temporaryAuthCredential, setTemporaryAuthCredential] = useState<AuthCredential>()
 
   // exposed functions
-  const loginWithEmail = (email: string, password: string) => () =>
-    loginWithCredential(authorizeWithEmail(email, password))
+  async function loginWithEmail(email: string, password: string) {
+    await loginWithCredential(authorizeWithEmail(email, password))
+  }
 
-  const loginWithGoogle = () => loginWithCredential(authorizeWithGoogle)
+  const loginWithGoogleHandler = () => loginWithCredential(authorizeWithGoogle)
 
-  const loginWithGithub = () => loginWithCredential(authorizeWithGithub)
+  const loginWithGithubHandler = () => loginWithCredential(authorizeWithGithub)
 
   async function loginToBackend(user: User) {
     await sendToken(await user.getIdToken())
@@ -56,6 +58,10 @@ export function useAuth(params?: UseAuthParams) {
     dispatch(logoutAction())
     toastLogoutSuccess()
     params?.afterLogoutAction?.()
+  }
+
+  async function signupWithEmailAndPassword(email: string, password: string) {
+    await loginWithCredential(authorizeWithNewEmail(email, password))
   }
 
   // unexposed implmentation detail
@@ -147,10 +153,11 @@ export function useAuth(params?: UseAuthParams) {
 
   return {
     loginWithEmail,
-    loginWithGoogle,
-    loginWithGithub,
+    loginWithGoogleHandler,
+    loginWithGithubHandler,
     loginToBackend,
     logoutFromBackend,
+    signupWithEmailAndPassword,
   }
 }
 
@@ -164,6 +171,8 @@ const authorizeWithGithub = async () =>
   signInWithPopup(getInitializedFirebaseAuth(), githubProvider)
 const authorizeWithGoogle = async () =>
   signInWithPopup(getInitializedFirebaseAuth(), googleAuthProvider)
+const authorizeWithNewEmail = (email: string, password: string) => async () =>
+  createUserWithEmailAndPassword(getInitializedFirebaseAuth(), email, password)
 
 // API call
 async function sendToken(token: string) {

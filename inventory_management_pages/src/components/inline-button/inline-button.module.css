@@ -1,0 +1,6 @@
+.inlineButton {
+  all: unset;
+  display: inline;
+  text-decoration: underline;
+  cursor: pointer;
+}
