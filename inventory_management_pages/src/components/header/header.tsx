@@ -32,7 +32,9 @@ export default function Header() {
       <AppBar position='static'>
         <SyledToolbar>
           <Typography variant='h3'>Header</Typography>
+
           {username && <Typography variant='body1'>{username}</Typography>}
+
           <IconButton aria-label='hamburger-menu' size='medium' onClick={openMenu}>
             <MenuIcon fontSize='inherit' />
           </IconButton>
