@@ -4,7 +4,7 @@ import { AppBar, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/ma
 import { styled } from '@mui/material/styles'
 import { MouseEvent, useState } from 'react'
 
-import SigninModal from '@/components/modal/signin-modal/signin-modal'
+import SigninModal from '@/components/modal/signin/signin-modal'
 import { useAuth } from '@/hooks/auth'
 import { useAppSelector } from '@/store/hooks'
 import { checkLogin, getUsername } from '@/store/slice/user'
