@@ -33,10 +33,6 @@ export function useAuth(params?: UseAuthParams) {
   const [temporaryAuthCredential, setTemporaryAuthCredential] = useState<AuthCredential>()
 
   // exposed functions
-  async function loginWithEmail(email: string, password: string) {
-    await loginWithCredential(authorizeWithEmail(email, password))
-  }
-
   const loginWithGoogleHandler = () => loginWithCredential(authorizeWithGoogle)
 
   const loginWithGithubHandler = () => loginWithCredential(authorizeWithGithub)
@@ -58,6 +54,10 @@ export function useAuth(params?: UseAuthParams) {
     dispatch(logoutAction())
     toastLogoutSuccess()
     params?.afterLogoutAction?.()
+  }
+
+  async function loginWithEmail(email: string, password: string) {
+    await loginWithCredential(authorizeWithEmail(email, password))
   }
 
   async function signupWithEmailAndPassword(email: string, password: string) {

@@ -6,21 +6,21 @@ import InlineButton from '@/components/inline-button/inline-button'
 import CommonModal from '@/components/modal/common/common-modal'
 import { useAuth } from '@/hooks/auth'
 
-type SigninModalProps = {
+type SignupModalProps = {
   isOpen: boolean
   close: () => void
-  openSignup: () => void
+  openLogin: () => void
 }
 
-export default function SigninModal({ isOpen, close, openSignup }: SigninModalProps) {
-  const { loginWithEmail, loginWithGoogleHandler, loginWithGithubHandler } = useAuth({
+export default function SignupModal({ isOpen, close, openLogin }: SignupModalProps) {
+  const { loginWithGoogleHandler, loginWithGithubHandler, signupWithEmailAndPassword } = useAuth({
     afterLoginAction: close,
   })
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  async function loginHandler() {
-    await loginWithEmail(email, password)
+  async function signupHandler() {
+    await signupWithEmailAndPassword(email, password)
   }
 
   function onEmailChange(e: ChangeEvent<HTMLInputElement>) {
@@ -32,18 +32,18 @@ export default function SigninModal({ isOpen, close, openSignup }: SigninModalPr
   }
 
   return (
-    <CommonModal isOpen={isOpen} close={close} title='Login'>
+    <CommonModal isOpen={isOpen} close={close} title='Signup'>
       <Box>
-        <Typography>Login with email</Typography>
+        <Typography>Signup with email</Typography>
         <Input label='email' type='email' value={email} onChange={onEmailChange} />
         <Input label='password' type='password' value={password} onChange={onPasswordChange} />
         <Button
-          onClick={loginHandler}
+          onClick={signupHandler}
           color='primary'
           disableElevation={true}
           sx={{ textAlign: 'center' }}
         >
-          LOGIN
+          SIGNUP
         </Button>
       </Box>
 
@@ -53,21 +53,21 @@ export default function SigninModal({ isOpen, close, openSignup }: SigninModalPr
           disableElevation={true}
           sx={{ textAlign: 'center' }}
         >
-          <Typography>Login with Google</Typography>
+          <Typography>Signup with Google</Typography>
         </Button>
         <Button
           onClick={loginWithGithubHandler}
           disableElevation={true}
           sx={{ textAlign: 'center' }}
         >
-          <Typography>Login with Github</Typography>
+          <Typography>Signup with Github</Typography>
         </Button>
       </Box>
 
       <Box>
         <Typography>
-          Don&apos;t have an account? <InlineButton onClick={openSignup}>Signup</InlineButton> to
-          the app!
+          Already have an account? <InlineButton onClick={openLogin}>Login</InlineButton> to the
+          app!
         </Typography>
       </Box>
     </CommonModal>

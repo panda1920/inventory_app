@@ -5,12 +5,14 @@ import { styled } from '@mui/material/styles'
 import { MouseEvent, useState } from 'react'
 
 import SigninModal from '@/components/modal/signin/signin-modal'
+import SignupModal from '@/components/modal/signup/signup-modal'
 import { useAuth } from '@/hooks/auth'
 import { useAppSelector } from '@/store/hooks'
 import { checkLogin, getUsername } from '@/store/slice/user'
 
 export default function Header() {
   const [isLoginOpen, setLoginOpen] = useState(false)
+  const [isSignupOpen, setSignupOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const isLoggedIn = useAppSelector(checkLogin)
   const username = useAppSelector(getUsername)
@@ -24,6 +26,12 @@ export default function Header() {
   }
   async function login() {
     setLoginOpen(true)
+    setSignupOpen(false)
+    closeMenu()
+  }
+  async function signup() {
+    setSignupOpen(true)
+    setLoginOpen(false)
     closeMenu()
   }
 
@@ -54,7 +62,8 @@ export default function Header() {
         </SyledToolbar>
       </AppBar>
 
-      <SigninModal isOpen={isLoginOpen} close={() => setLoginOpen(false)} />
+      <SigninModal isOpen={isLoginOpen} close={() => setLoginOpen(false)} openSignup={signup} />
+      <SignupModal isOpen={isSignupOpen} close={() => setSignupOpen(false)} openLogin={login} />
     </>
   )
 }
