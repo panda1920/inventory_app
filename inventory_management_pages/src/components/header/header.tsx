@@ -4,7 +4,7 @@ import { AppBar, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/ma
 import { styled } from '@mui/material/styles'
 import { MouseEvent, useState } from 'react'
 
-import SigninModal from '@/components/modal/signin/signin-modal'
+import LoginModal from '@/components/modal/login/login-modal'
 import SignupModal from '@/components/modal/signup/signup-modal'
 import { useAuth } from '@/hooks/auth'
 import { useAppSelector } from '@/store/hooks'
@@ -62,7 +62,7 @@ export default function Header() {
         </SyledToolbar>
       </AppBar>
 
-      <SigninModal isOpen={isLoginOpen} close={() => setLoginOpen(false)} openSignup={signup} />
+      <LoginModal isOpen={isLoginOpen} close={() => setLoginOpen(false)} openSignup={signup} />
       <SignupModal isOpen={isSignupOpen} close={() => setSignupOpen(false)} openLogin={login} />
     </>
   )

@@ -6,13 +6,13 @@ import InlineButton from '@/components/inline-button/inline-button'
 import CommonModal from '@/components/modal/common/common-modal'
 import { useAuth } from '@/hooks/auth'
 
-type SigninModalProps = {
+type LoginModalProps = {
   isOpen: boolean
   close: () => void
   openSignup: () => void
 }
 
-export default function SigninModal({ isOpen, close, openSignup }: SigninModalProps) {
+export default function LoginModal({ isOpen, close, openSignup }: LoginModalProps) {
   const { loginWithEmail, loginWithGoogleHandler, loginWithGithubHandler } = useAuth({
     afterLoginAction: close,
   })

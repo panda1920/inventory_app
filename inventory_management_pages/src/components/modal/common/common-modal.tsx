@@ -1,5 +1,4 @@
-import { Dialog, DialogTitle, styled } from '@mui/material'
-import { Box } from '@mui/system'
+import { Box, Dialog, DialogTitle, styled } from '@mui/material'
 import { ReactNode } from 'react'
 
 type CommonModalProps = {
@@ -13,12 +12,12 @@ export default function CommonModal({ isOpen, close, title, children }: CommonMo
   return (
     <Dialog open={isOpen} onClose={close}>
       <DialogTitle>{title}</DialogTitle>
-      <DialogContainer>{children}</DialogContainer>
+      <DialogContent>{children}</DialogContent>
     </Dialog>
   )
 }
 
-const DialogContainer = styled(Box)(({ theme }) => ({
+const DialogContent = styled(Box)(({ theme }) => ({
   paddingBlock: theme.spacing(2),
   paddingInline: theme.spacing(3),
 }))

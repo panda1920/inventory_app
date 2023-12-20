@@ -77,7 +77,7 @@ export function useAuth(params?: UseAuthParams) {
       console.error(e)
       // found an existing account using different credential
       if (e.code === 'auth/account-exists-with-different-credential')
-        return await promptUserToSigninWithOtherMethods(e)
+        return await promptUserToLoginWithOtherMethods(e)
 
       if (e.code === 'auth/invalid-login-credentials') return toastInvalidCredentials()
 
@@ -107,13 +107,13 @@ export function useAuth(params?: UseAuthParams) {
     }
   }
 
-  async function promptUserToSigninWithOtherMethods(e: AuthError) {
+  async function promptUserToLoginWithOtherMethods(e: AuthError) {
     const credential = OAuthProvider.credentialFromError(e)
 
     try {
       if (!credential) throw new InventoryAppClientError('Login error')
       setTemporaryAuthCredential(credential)
-      toastSigninWithOtherMethods()
+      toastLoginWithOtherMethods()
     } catch (e) {
       console.error(e)
       toastGenericLoginError()
@@ -135,9 +135,9 @@ export function useAuth(params?: UseAuthParams) {
   function toastLoginSuccess() {
     enqueueSnackbar('You are now logged in.', { variant: 'success' })
   }
-  function toastSigninWithOtherMethods() {
+  function toastLoginWithOtherMethods() {
     enqueueSnackbar(
-      `There is already an existing account.\nPlease signin with previously used method to link your current`,
+      `There is already an existing account.\nPlease login with previously used method to link your current`,
       { variant: 'info' },
     )
   }
