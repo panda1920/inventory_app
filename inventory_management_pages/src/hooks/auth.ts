@@ -75,13 +75,20 @@ export function useAuth(params?: UseAuthParams) {
       await linkTemporaryCredential(result.user)
     } catch (e: any) {
       console.error(e)
-      // found an existing account using different credential
-      if (e.code === 'auth/account-exists-with-different-credential')
-        return await promptUserToLoginWithOtherMethods(e)
 
-      if (e.code === 'auth/invalid-login-credentials') return toastInvalidCredentials()
-
-      toastGenericLoginError()
+      switch (e.code) {
+        case 'auth/account-exists-with-different-credential':
+          await await promptUserToLoginWithOtherMethods(e)
+          break
+        case 'auth/invalid-login-credentials':
+          toastInvalidCredentials()
+          break
+        case 'auth/email-already-in-use':
+          toastEmailUsed()
+          break
+        default:
+          toastGenericLoginError()
+      }
     }
 
     params?.afterLoginAction?.()
@@ -121,12 +128,6 @@ export function useAuth(params?: UseAuthParams) {
   }
 
   // toast functions
-  function toastVerifyEmail() {
-    enqueueSnackbar(
-      'Verification email has been sent.\nPlease verify your account by clicking the link in email.',
-      { variant: 'info' },
-    )
-  }
   function toastLinkingSuccess() {
     enqueueSnackbar('Your account has been successfully linked to a new login method.', {
       variant: 'success',
@@ -134,6 +135,15 @@ export function useAuth(params?: UseAuthParams) {
   }
   function toastLoginSuccess() {
     enqueueSnackbar('You are now logged in.', { variant: 'success' })
+  }
+  function toastLogoutSuccess() {
+    enqueueSnackbar('You are now logged out.', { variant: 'success' })
+  }
+  function toastVerifyEmail() {
+    enqueueSnackbar(
+      'Verification email has been sent.\nPlease verify your account by clicking the link in email.',
+      { variant: 'info' },
+    )
   }
   function toastLoginWithOtherMethods() {
     enqueueSnackbar(
@@ -147,8 +157,9 @@ export function useAuth(params?: UseAuthParams) {
   function toastGenericLoginError() {
     enqueueSnackbar('There was an error during login.\nPlease try again.', { variant: 'error' })
   }
-  function toastLogoutSuccess() {
-    enqueueSnackbar('You are now logged out.', { variant: 'success' })
+
+  function toastEmailUsed() {
+    enqueueSnackbar('Failed to signup.\nThe email provided is already used', { variant: 'error' })
   }
 
   return {
