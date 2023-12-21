@@ -1,10 +1,13 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Box, Button, Typography } from '@mui/material'
-import { ChangeEvent, SyntheticEvent, useState } from 'react'
+import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 
 import Input from '@/components/form/input/input'
 import InlineButton from '@/components/inline-button/inline-button'
 import CommonModal from '@/components/modal/common/common-modal'
 import { useAuth } from '@/hooks/auth'
+import { LoginSchema, loginSchema } from '@/types/form/login'
 
 type LoginModalProps = {
   isOpen: boolean
@@ -16,39 +19,35 @@ export default function LoginModal({ isOpen, close, openSignup }: LoginModalProp
   const { loginWithEmail, loginWithGoogleHandler, loginWithGithubHandler } = useAuth({
     afterLoginAction: close,
   })
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const { handleSubmit, control, reset } = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
+    mode: 'onBlur',
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  })
 
-  async function loginHandler(e: SyntheticEvent<HTMLFormElement>) {
-    e.preventDefault()
-    await loginWithEmail(email, password)
-  }
+  // reset form state when modal opens
+  useEffect(() => {
+    isOpen && reset()
+  }, [isOpen, reset])
 
-  function onEmailChange(e: ChangeEvent<HTMLInputElement>) {
-    setEmail(e.target.value)
-  }
-
-  function onPasswordChange(e: ChangeEvent<HTMLInputElement>) {
-    setPassword(e.target.value)
+  async function loginHandler(data: LoginSchema) {
+    await loginWithEmail(data.email, data.password)
   }
 
   return (
     <CommonModal isOpen={isOpen} close={close} title='Login'>
-      <Box component='form' onSubmit={loginHandler}>
+      <Box component='form' onSubmit={handleSubmit(loginHandler)}>
         <Typography>Login with email</Typography>
-        <Input
-          label='email'
-          type='email'
-          value={email}
-          onChange={onEmailChange}
-          autoComplete='email'
-        />
+        <Input label='email' type='email' name='email' autoComplete='email' control={control} />
         <Input
           label='password'
           type='password'
-          value={password}
-          onChange={onPasswordChange}
+          name='password'
           autoComplete='current-password'
+          control={control}
         />
         <Button type='submit' color='primary' disableElevation={true} sx={{ textAlign: 'center' }}>
           LOGIN

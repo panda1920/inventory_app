@@ -1,17 +1,30 @@
 import TextField from '@mui/material/TextField'
 import { ComponentProps } from 'react'
+import { Control, FieldValues, Path, useController } from 'react-hook-form'
 
-type InputProps = ComponentProps<typeof TextField>
-// {
-// id?: string
-// name?: string
-// type?: string
-// label?: string
-// value?: any
-// autoComplete?: string
-// onChange?: (e: ChangeEvent<HTMLInputElement>) => void | Promise<void>
-// }
+type InputProps<T extends FieldValues> = ComponentProps<typeof TextField> & {
+  name: Path<T>
+  control: Control<T>
+}
 
-export default function Input(props: InputProps) {
-  return <TextField variant='outlined' {...props} />
+export default function Input<T extends FieldValues>(props: InputProps<T>) {
+  const { name, control, ...restProps } = props
+  const {
+    field,
+    fieldState,
+    formState: { errors },
+  } = useController({ name, control })
+  const { ref, ...restRhfField } = field
+  const errorMessage = String(errors?.[name]?.message ?? '')
+
+  return (
+    <TextField
+      variant='outlined'
+      {...restProps}
+      {...restRhfField}
+      inputRef={ref}
+      error={fieldState.invalid}
+      helperText={errorMessage}
+    />
+  )
 }
