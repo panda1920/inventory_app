@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from '@mui/material'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, SyntheticEvent, useState } from 'react'
 
 import Input from '@/components/form/input/input'
 import InlineButton from '@/components/inline-button/inline-button'
@@ -19,7 +19,8 @@ export default function SignupModal({ isOpen, close, openLogin }: SignupModalPro
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  async function signupHandler() {
+  async function signupHandler(e: SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault()
     await signupWithEmailAndPassword(email, password)
   }
 
@@ -33,16 +34,23 @@ export default function SignupModal({ isOpen, close, openLogin }: SignupModalPro
 
   return (
     <CommonModal isOpen={isOpen} close={close} title='Signup'>
-      <Box>
+      <Box component='form' onSubmit={signupHandler}>
         <Typography>Signup with email</Typography>
-        <Input label='email' type='email' value={email} onChange={onEmailChange} />
-        <Input label='password' type='password' value={password} onChange={onPasswordChange} />
-        <Button
-          onClick={signupHandler}
-          color='primary'
-          disableElevation={true}
-          sx={{ textAlign: 'center' }}
-        >
+        <Input
+          label='email'
+          type='email'
+          value={email}
+          onChange={onEmailChange}
+          autoComplete='email'
+        />
+        <Input
+          label='password'
+          type='password'
+          value={password}
+          onChange={onPasswordChange}
+          autoComplete='new-password'
+        />
+        <Button type='submit' color='primary' disableElevation={true} sx={{ textAlign: 'center' }}>
           SIGNUP
         </Button>
       </Box>

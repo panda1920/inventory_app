@@ -78,7 +78,7 @@ export function useAuth(params?: UseAuthParams) {
 
       switch (e.code) {
         case 'auth/account-exists-with-different-credential':
-          await await promptUserToLoginWithOtherMethods(e)
+          await promptUserToLoginWithOtherMethods(e)
           break
         case 'auth/invalid-login-credentials':
           toastInvalidCredentials()
