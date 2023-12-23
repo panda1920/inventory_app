@@ -10,11 +10,10 @@ type InputProps<T extends FieldValues> = ComponentProps<typeof TextField> & {
 export default function Input<T extends FieldValues>(props: InputProps<T>) {
   const { name, control, ...restProps } = props
   const {
-    field,
-    fieldState,
+    field: { ref, ...restRhfField },
+    fieldState: { invalid },
     formState: { errors },
   } = useController({ name, control })
-  const { ref, ...restRhfField } = field
   const errorMessage = String(errors?.[name]?.message ?? '')
 
   return (
@@ -23,7 +22,7 @@ export default function Input<T extends FieldValues>(props: InputProps<T>) {
       {...restProps}
       {...restRhfField}
       inputRef={ref}
-      error={fieldState.invalid}
+      error={invalid}
       helperText={errorMessage}
     />
   )

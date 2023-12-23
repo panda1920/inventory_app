@@ -19,7 +19,12 @@ export default function SignupModal({ isOpen, close, openLogin }: SignupModalPro
   const { loginWithGoogleHandler, loginWithGithubHandler, signup } = useAuth({
     afterLoginAction: close,
   })
-  const { handleSubmit, control, reset } = useForm<SignupSchema>({
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<SignupSchema>({
     resolver: zodResolver(signupSchema),
     mode: 'onBlur',
     defaultValues: {
@@ -65,7 +70,13 @@ export default function SignupModal({ isOpen, close, openLogin }: SignupModalPro
           autoComplete='new-password'
           control={control}
         />
-        <Button type='submit' color='primary' disableElevation={true} sx={{ textAlign: 'center' }}>
+        <Button
+          type='submit'
+          color='primary'
+          disableElevation={true}
+          sx={{ textAlign: 'center' }}
+          disabled={isSubmitting}
+        >
           SIGNUP
         </Button>
       </Box>
