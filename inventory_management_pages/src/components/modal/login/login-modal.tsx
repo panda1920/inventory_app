@@ -16,7 +16,7 @@ type LoginModalProps = {
 }
 
 export default function LoginModal({ isOpen, close, openSignup }: LoginModalProps) {
-  const { loginWithEmail, loginWithGoogleHandler, loginWithGithubHandler } = useAuth({
+  const { login, loginWithGoogleHandler, loginWithGithubHandler } = useAuth({
     afterLoginAction: close,
   })
   const { handleSubmit, control, reset } = useForm<LoginSchema>({
@@ -34,7 +34,7 @@ export default function LoginModal({ isOpen, close, openSignup }: LoginModalProp
   }, [isOpen, reset])
 
   async function loginHandler(data: LoginSchema) {
-    await loginWithEmail(data.email, data.password)
+    await login(data)
   }
 
   return (

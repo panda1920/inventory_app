@@ -21,6 +21,8 @@ import { InventoryAppClientError } from '@/helper/errors'
 import { getFirebaseAuth, getInitializedFirebaseAuth } from '@/helper/firebase'
 import { useAppDispatch } from '@/store/hooks'
 import { loginAction, logoutAction } from '@/store/slice/user'
+import { LoginSchema } from '@/types/form/login'
+import { SignupSchema } from '@/types/form/signup'
 
 type UseAuthParams = {
   afterLoginAction?: () => void
@@ -56,11 +58,11 @@ export function useAuth(params?: UseAuthParams) {
     params?.afterLogoutAction?.()
   }
 
-  async function loginWithEmail(email: string, password: string) {
+  async function login({ email, password }: LoginSchema) {
     await loginWithCredential(authorizeWithEmail(email, password))
   }
 
-  async function signupWithEmailAndPassword(email: string, password: string) {
+  async function signup({ email, password }: SignupSchema) {
     await loginWithCredential(authorizeWithNewEmail(email, password))
   }
 
@@ -163,12 +165,12 @@ export function useAuth(params?: UseAuthParams) {
   }
 
   return {
-    loginWithEmail,
+    login,
     loginWithGoogleHandler,
     loginWithGithubHandler,
     loginToBackend,
     logoutFromBackend,
-    signupWithEmailAndPassword,
+    signup,
   }
 }
 
