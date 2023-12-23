@@ -41,9 +41,9 @@ export default function LoginModal({ isOpen, close, openSignup }: LoginModalProp
     <CommonModal isOpen={isOpen} close={close} title='Login'>
       <Box component='form' onSubmit={handleSubmit(loginHandler)}>
         <Typography>Login with email</Typography>
-        <Input label='email' type='email' name='email' autoComplete='email' control={control} />
+        <Input label='Email' type='email' name='email' autoComplete='email' control={control} />
         <Input
-          label='password'
+          label='Password'
           type='password'
           name='password'
           autoComplete='current-password'

@@ -23,8 +23,10 @@ export default function SignupModal({ isOpen, close, openLogin }: SignupModalPro
     resolver: zodResolver(signupSchema),
     mode: 'onBlur',
     defaultValues: {
+      username: '',
       email: '',
       password: '',
+      confirm: '',
     },
   })
 
@@ -41,10 +43,24 @@ export default function SignupModal({ isOpen, close, openLogin }: SignupModalPro
     <CommonModal isOpen={isOpen} close={close} title='Signup'>
       <Box component='form' onSubmit={handleSubmit(signupHandler)}>
         <Typography>Signup with email</Typography>
-        <Input label='email' name='email' type='email' autoComplete='email' control={control} />
         <Input
-          label='password'
+          label='Username'
+          name='username'
+          type='text'
+          autoComplete='username'
+          control={control}
+        />
+        <Input label='Email' name='email' type='email' autoComplete='email' control={control} />
+        <Input
+          label='Password'
           name='password'
+          type='password'
+          autoComplete='new-password'
+          control={control}
+        />
+        <Input
+          label='Confirm password'
+          name='confirm'
           type='password'
           autoComplete='new-password'
           control={control}

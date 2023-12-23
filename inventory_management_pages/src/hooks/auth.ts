@@ -13,6 +13,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  updateProfile,
 } from 'firebase/auth'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
@@ -62,8 +63,8 @@ export function useAuth(params?: UseAuthParams) {
     await loginWithCredential(authorizeWithEmail(email, password))
   }
 
-  async function signup({ email, password }: SignupSchema) {
-    await loginWithCredential(authorizeWithNewEmail(email, password))
+  async function signup(signupSchema: SignupSchema) {
+    await loginWithCredential(authorizeWithNewEmail(signupSchema))
   }
 
   // unexposed implmentation detail
@@ -91,9 +92,9 @@ export function useAuth(params?: UseAuthParams) {
         default:
           toastGenericLoginError()
       }
+    } finally {
+      params?.afterLoginAction?.()
     }
-
-    params?.afterLoginAction?.()
   }
 
   async function promptAccountVerification(credential: UserCredential) {
@@ -184,8 +185,15 @@ const authorizeWithGithub = async () =>
   signInWithPopup(getInitializedFirebaseAuth(), githubProvider)
 const authorizeWithGoogle = async () =>
   signInWithPopup(getInitializedFirebaseAuth(), googleAuthProvider)
-const authorizeWithNewEmail = (email: string, password: string) => async () =>
-  createUserWithEmailAndPassword(getInitializedFirebaseAuth(), email, password)
+const authorizeWithNewEmail = (signupSchema: SignupSchema) => async () => {
+  const { email, password, username } = signupSchema
+
+  const auth = getInitializedFirebaseAuth()
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+  await updateProfile(userCredential.user, { displayName: username })
+
+  return userCredential
+}
 
 // API call
 async function sendToken(token: string) {
