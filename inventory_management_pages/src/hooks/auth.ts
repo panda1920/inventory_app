@@ -76,6 +76,7 @@ export function useAuth(params?: UseAuthParams) {
 
       await loginToBackend(result.user)
       await linkTemporaryCredential(result.user)
+      params?.afterLoginAction?.()
     } catch (e: any) {
       console.error(e)
 
@@ -89,11 +90,12 @@ export function useAuth(params?: UseAuthParams) {
         case 'auth/email-already-in-use':
           toastEmailUsed()
           break
+        case 'auth/popup-closed-by-user':
+          // just ignore this error because there is nothing that should be done or needs notification
+          break
         default:
           toastGenericLoginError()
       }
-    } finally {
-      params?.afterLoginAction?.()
     }
   }
 
