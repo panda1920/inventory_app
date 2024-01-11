@@ -9,12 +9,14 @@ export const passwordSchema = z
     return true
   }, 'Password must contain a number and an alphabet.')
 
-export const baseSignupSchema = z.object({
-  username: z.string().min(6, { message: 'Username must be at least 6 characters long.' }),
-  email: z.string().email(),
-  password: passwordSchema,
-  confirm: passwordSchema,
-})
+export const baseSignupSchema = z
+  .object({
+    username: z.string().min(6, { message: 'Username must be at least 6 characters long.' }),
+    email: z.string().email(),
+    password: passwordSchema,
+    confirm: passwordSchema,
+  })
+  .describe('Schema for email/password registration')
 
 export const signupSchema = baseSignupSchema.refine(
   (schema) => {

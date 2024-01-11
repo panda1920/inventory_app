@@ -4,9 +4,9 @@ import { createCommonApiHandler } from '@/helper/api'
 import { cookieNames, setCookieString } from '@/helper/cookies'
 import { InventoryAppServerError } from '@/helper/errors'
 import { auth } from '@/helper/firebase-admin'
-import { FailResponseData, SuccessResponseData } from '@/types/api'
+import { FailResponse, SuccessResponse } from '@/types/api/common'
 
-type Data = SuccessResponseData | FailResponseData
+type Data = SuccessResponse | FailResponse
 
 const loginHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   const token = req.body.token

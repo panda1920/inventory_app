@@ -38,14 +38,14 @@ export default function Auth() {
 
         if (mode === 'verifyEmail') {
           // verify code
-          await applyActionCode(getFirebaseAuth(), oobCode as string)
+          await applyActionCode(getFirebaseAuth(), oobCode)
           toastAccountVerified()
 
           // automatically login as persisted user
           const persistedUser = getFirebaseAuth().currentUser
           if (persistedUser) await loginToBackend(persistedUser)
 
-          return router.push(continueUrl as string)
+          return router.push(continueUrl)
         }
       } catch (e) {
         console.error(e)
