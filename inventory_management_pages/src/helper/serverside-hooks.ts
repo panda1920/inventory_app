@@ -1,9 +1,15 @@
+import { ParsedUrlQuery } from 'querystring'
+
 import { UserRecord } from 'firebase-admin/auth'
-import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
+import {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  GetServerSidePropsResult,
+  PreviewData,
+} from 'next'
 
 import { cookieNames, eraseCookieString } from '@/helper/cookies'
 import { auth } from '@/helper/firebase-admin'
-import { GetServerSidePropsResultWithUserInfo } from '@/types/api'
 
 /**
  * Helps define common operation that needs to take place
@@ -12,12 +18,13 @@ import { GetServerSidePropsResultWithUserInfo } from '@/types/api'
  * @returns
  */
 export function withServerSideHooks<T extends object>(
-  serversidePropsFunc: GetServerSideProps<T> = emptyProps<T>,
+  serversidePropsFunc: GetServerSidePropsWithAuthenticatedUser<T> = emptyProps<T>,
 ) {
-  return (async (context) => {
+  return (async (context: GetServerSidePropsContextWithAuthenticatedUser) => {
     // do something before here
     const claims = await decodeSession(context)
     const user = claims ? await auth.getUser(claims.uid) : undefined
+    context.user = user
 
     // execute route specific getServerSideProps()
     const propsResult = await serversidePropsFunc(context)
@@ -59,12 +66,29 @@ async function includeUserInfoToProps<T>(
   // do nothing when redirect or notfound
   if ('redirect' in propsResult || 'notFound' in propsResult) return propsResult
 
-  const propsResultWithUserInfo: GetServerSidePropsResultWithUserInfo<T> = {
+  const propsResultWithUserInfo = {
     props: {
       ...(await propsResult.props),
       user: { uid: claims.uid, username: claims.displayName ?? '' } as UserInfo,
     },
-  }
+  } satisfies GetServerSidePropsResultWithUserInfo<T>
 
   return propsResultWithUserInfo
 }
+
+type GetServerSidePropsResultWithUserInfo<T> = GetServerSidePropsResult<T & { user: UserInfo }>
+
+type GetServerSidePropsContextWithAuthenticatedUser<
+  Params extends ParsedUrlQuery = ParsedUrlQuery,
+  Preview extends PreviewData = PreviewData,
+> = GetServerSidePropsContext<Params, Preview> & {
+  user?: UserRecord
+}
+
+type GetServerSidePropsWithAuthenticatedUser<
+  Props extends { [key: string]: any } = { [key: string]: any },
+  Params extends ParsedUrlQuery = ParsedUrlQuery,
+  Preview extends PreviewData = PreviewData,
+> = (
+  context: GetServerSidePropsContextWithAuthenticatedUser<Params, Preview>,
+) => Promise<GetServerSidePropsResult<Props>>
