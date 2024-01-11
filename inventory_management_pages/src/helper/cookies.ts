@@ -45,7 +45,8 @@ export function eraseCookieString(name: CookieName) {
  * @returns
  */
 export function setCookieString(name: CookieName, value: string) {
-  return `${name}=${value}; Path=/; SameSite=Lax; HttpOnly`
+  const secureOption = process.env.NODE_ENV === 'production' ? 'Secure' : ''
+  return `${name}=${value}; Path=/; SameSite=Lax; HttpOnly; ${secureOption}`
 }
 
 export const cookieNames = {

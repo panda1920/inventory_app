@@ -2,14 +2,17 @@ import { NextApiRequest, NextApiResponse } from 'next'
 
 import { InventoryAppServerError } from './errors'
 
-type Handler<T = {}> = (req: NextApiRequest, res: NextApiResponse<T>) => Promise<void>
+type Handler<T extends object = {}> = (
+  req: NextApiRequest,
+  res: NextApiResponse<T>,
+) => Promise<void>
 
 type HandlerSpec = {
   handler: Handler
   isRestricted?: boolean
 }
 
-type HandlerSpecByMethods = {
+export type HandlerSpecByMethods = {
   GET?: HandlerSpec
   POST?: HandlerSpec
   PUT?: HandlerSpec
@@ -36,9 +39,10 @@ export const createCommonApiHandler = (handlers: HandlerSpecByMethods) => {
       if (!handlers[req.method])
         throw new InventoryAppServerError(`Handler for ${req.method} is not defined`, 400)
 
+      // TODO: restrict access to authenticated user
       await handlers[req.method]?.handler(req, res)
     } catch (e: any) {
-      console.error(e)
+      console.error(e.message ?? e)
       res.status(e.errorCode ?? 500).json({ message: e.message ?? 'Internal server error' })
     }
   }
