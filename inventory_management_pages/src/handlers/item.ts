@@ -9,16 +9,21 @@ import { RegisterItemSchema, UpdateItemSchema } from '@/types/form/item'
 const itemCollection = getCollection<Item>('items')
 
 export async function listItems(params: GetListQueryParameterSchema & { ownerId: string }) {
-  const { ownerId, offset, limit } = params
+  const { ownerId, start_after, limit } = params
 
-  const querySnapshot = await itemCollection
+  // get snapshort for cursor pagination
+  const startAfterSnapshot = start_after
+    ? await getDocumentSnapshotById(itemCollection, start_after, ownerId)
+    : undefined
+
+  let query = itemCollection
     .where('ownerId', '==', ownerId)
     .orderBy('sortOrder', 'asc')
-    .startAt(offset)
     .limit(limit)
-    .get()
 
-  return querySnapshot.docs.map((snapshot) => snapshot.data())
+  if (startAfterSnapshot) query = query.startAfter(startAfterSnapshot)
+
+  return (await query.get()).docs.map((snapshot) => snapshot.data())
 }
 
 export async function registerItem(params: RegisterItemSchema & { ownerId: string }) {
@@ -54,6 +59,20 @@ export async function removeItem(params: { ownerId: string; id: string }) {
   if (!(await isOwner(ownerId, docRef))) throw new InventoryAppServerError('Unauthorized', 401)
 
   await docRef.delete()
+}
+
+async function getDocumentSnapshotById(
+  collectionRef: FirebaseFirestore.CollectionReference<Item>,
+  id: string,
+  ownerId?: string,
+) {
+  const documentRef = collectionRef.doc(id)
+  // not owner
+  if (ownerId && !(await isOwner(ownerId, documentRef))) return undefined
+
+  const snapshot = await documentRef.get()
+
+  return snapshot.exists ? snapshot : undefined
 }
 
 async function getMaxPlus1SortOrder(
