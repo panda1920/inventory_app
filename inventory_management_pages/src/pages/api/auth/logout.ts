@@ -2,9 +2,9 @@ import { NextApiRequest, NextApiResponse } from 'next'
 
 import { createCommonApiHandler } from '@/helper/api'
 import { cookieNames, eraseCookieString } from '@/helper/cookies'
-import { FailResponseData, SuccessResponseData } from '@/types/api'
+import { FailResponse, SuccessResponse } from '@/types/api/common'
 
-type Data = SuccessResponseData | FailResponseData
+type Data = SuccessResponse | FailResponse
 
 const logoutHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   const sessionCookie = req.cookies[cookieNames.sessionCookie]

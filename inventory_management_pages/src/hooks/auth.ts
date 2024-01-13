@@ -199,7 +199,7 @@ const authorizeWithNewEmail = (signupSchema: SignupSchema) => async () => {
 
 // API call
 async function sendToken(token: string) {
-  const url = '/api/login'
+  const url = '/api/auth/login'
   const options: RequestInit = {
     method: 'POST',
     headers: {
@@ -216,7 +216,7 @@ async function sendToken(token: string) {
   throw new InventoryAppClientError('Login Failed')
 }
 async function logout() {
-  const url = '/api/logout'
+  const url = '/api/auth/logout'
   const options: RequestInit = {
     method: 'POST',
     headers: {
