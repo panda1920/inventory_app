@@ -10,6 +10,7 @@ import {
 
 import { cookieNames, eraseCookieString } from '@/helper/cookies'
 import { auth } from '@/helper/firebase-admin'
+import { decodeSessionCookie } from './api'
 
 /**
  * Helps define common operation that needs to take place
@@ -43,12 +44,8 @@ async function emptyProps<T extends object>() {
 }
 
 async function decodeSession(context: GetServerSidePropsContext) {
-  const sessionCookie = context.req.cookies[cookieNames.sessionCookie]
-
-  if (!sessionCookie) return
-
   try {
-    return (await auth.verifySessionCookie(sessionCookie, true)) as IdTokenClaim
+    return decodeSessionCookie(context.req.cookies)
   } catch (e) {
     console.error(e)
     // invalidate session if failed to verify

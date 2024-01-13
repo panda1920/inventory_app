@@ -51,7 +51,7 @@ export function setCookieString(name: CookieName, value: string) {
 
 export const cookieNames = {
   tokenCookie: 'token',
-  sessionCookie: 'INVENTORY_APP_SESSSION',
+  sessionCookie: 'INVENTORY_APP_SESSION',
 } as const
 
 export type CookieName = (typeof cookieNames)[keyof typeof cookieNames]
