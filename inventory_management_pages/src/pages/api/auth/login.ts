@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
 import { login } from '@/handlers/auth'
-import { createCommonApiHandler } from '@/helper/api'
+import { HandlerSpecByMethods, createCommonApiHandler } from '@/helper/api'
 import { cookieNames, setCookieString } from '@/helper/cookies'
 import { FailResponse, SuccessResponse } from '@/types/api/common'
 
@@ -21,6 +21,6 @@ const loginHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
 
 const handlers = {
   POST: { handler: loginHandler },
-} as const
+} satisfies HandlerSpecByMethods
 
 export default createCommonApiHandler(handlers)

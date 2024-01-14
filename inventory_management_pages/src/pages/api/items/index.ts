@@ -33,10 +33,10 @@ const getItems = async (
   res.status(200).json({ success: true, items })
 }
 
-const handlers: HandlerSpecByMethods = {
+const handlers = {
   POST: { handler: postItem, isRestricted: true },
   GET: { handler: getItems, isRestricted: true },
-}
+} satisfies HandlerSpecByMethods
 
 export default createCommonApiHandler(handlers)
 
