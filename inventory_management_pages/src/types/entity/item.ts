@@ -4,5 +4,5 @@ export type Item = {
   quantity: number
   ownerId: string
   sortOrder: number
-  createdAt: string | Date
+  createdAt: string
 }

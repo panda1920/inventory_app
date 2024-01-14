@@ -8,9 +8,9 @@ import {
   PreviewData,
 } from 'next'
 
+import { decodeSessionCookie } from '@/helper/api'
 import { cookieNames, eraseCookieString } from '@/helper/cookies'
 import { auth } from '@/helper/firebase-admin'
-import { decodeSessionCookie } from './api'
 
 /**
  * Helps define common operation that needs to take place

@@ -34,7 +34,7 @@ export const converter = <
       // return id
       id: snap.id,
       // convert firestore Timestamp to Date
-      createdAt: (data.createdAt as Timestamp | undefined)?.toDate(),
+      createdAt: (data.createdAt as Timestamp | undefined)?.toDate().toISOString(),
     } as T & { id: string; createdAt?: Date }
   },
 })
