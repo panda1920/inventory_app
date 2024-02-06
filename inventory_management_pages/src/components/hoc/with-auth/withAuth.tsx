@@ -9,7 +9,6 @@ export default function withAuth<T extends object>(Component: React.ComponentTyp
     const isLoggedIn = useAppSelector(checkLogin)
 
     useEffect(() => {
-      console.log('🚀 ~ return ~ isLoggedIn:', isLoggedIn)
       if (!isLoggedIn) router.replace('/')
     }, [isLoggedIn])
 

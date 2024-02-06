@@ -5,6 +5,7 @@ import Remove from '@mui/icons-material/Remove'
 import { Box, Checkbox, Typography, useTheme } from '@mui/material'
 import { useEffect, useState } from 'react'
 
+import withAuth from '@/components/hoc/with-auth/withAuth'
 import { listItems } from '@/handlers/item'
 import { InventoryAppClientError } from '@/helper/errors'
 import { withServerSideHooks } from '@/helper/serverside-hooks'
@@ -15,7 +16,7 @@ type ItemsProps = {
   items: Item[]
 }
 
-export default function Items({ items: fetchedItems }: ItemsProps) {
+function Items({ items: fetchedItems }: ItemsProps) {
   const theme = useTheme()
   const [items, setItems] = useState(fetchedItems)
   const [itemsChecklist, setItemsChecklist] = useState(createNewItemsChecklist(items))
@@ -57,9 +58,9 @@ export default function Items({ items: fetchedItems }: ItemsProps) {
 
   return (
     <section>
-      <h1 className='text-center' style={{ marginBlock: theme.spacing(2) }}>
-        <Typography variant='h3'>Your Items</Typography>
-      </h1>
+      <Typography variant='h3' style={{ marginBlock: theme.spacing(2) }} className='text-center'>
+        Your Items
+      </Typography>
       <ul
         className={`ms-[auto] me-[auto]`}
         style={{ width: `min(1000px, 100% - ${theme.spacing(2)})` }}
@@ -80,11 +81,21 @@ export default function Items({ items: fetchedItems }: ItemsProps) {
   )
 }
 
+export default withAuth(Items)
+
 export const getServerSideProps = withServerSideHooks<ItemsProps>(async (context) => {
-  let items: Item[] = []
-  if (context.user) {
-    items = await listItems({ limit: 100, ownerId: context.user.uid })
+  // unauthenticated
+  if (!context.user) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
   }
+
+  let items: Item[] = []
+  items = await listItems({ limit: 100, ownerId: context.user.uid })
 
   return {
     props: {
