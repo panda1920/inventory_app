@@ -3,6 +3,7 @@ import Delete from '@mui/icons-material/Delete'
 import Edit from '@mui/icons-material/Edit'
 import Remove from '@mui/icons-material/Remove'
 import { Box, Button, Typography, useTheme } from '@mui/material'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
 
 import withAuth from '@/components/hoc/with-auth/withAuth'
@@ -11,7 +12,6 @@ import { InventoryAppClientError } from '@/helper/errors'
 import { withServerSideHooks } from '@/helper/serverside-hooks'
 import type { Item } from '@/types/entity/item'
 import { UpdateItemSchema } from '@/types/form/item'
-import { useRouter } from 'next/router'
 
 type ItemsProps = {
   items: Item[]

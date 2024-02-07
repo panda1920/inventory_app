@@ -1,6 +1,7 @@
+import { Typography, useTheme } from '@mui/material'
+
 import withAuth from '@/components/hoc/with-auth/withAuth'
 import { withServerSideHooks } from '@/helper/serverside-hooks'
-import { Typography, useTheme } from '@mui/material'
 
 function RegisterItem() {
   const theme = useTheme()
