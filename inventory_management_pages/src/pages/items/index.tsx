@@ -2,8 +2,8 @@ import Add from '@mui/icons-material/Add'
 import Delete from '@mui/icons-material/Delete'
 import Edit from '@mui/icons-material/Edit'
 import Remove from '@mui/icons-material/Remove'
-import { Box, Checkbox, Typography, useTheme } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { Box, Button, Typography, useTheme } from '@mui/material'
+import { useState } from 'react'
 
 import withAuth from '@/components/hoc/with-auth/withAuth'
 import { listItems } from '@/handlers/item'
@@ -11,6 +11,7 @@ import { InventoryAppClientError } from '@/helper/errors'
 import { withServerSideHooks } from '@/helper/serverside-hooks'
 import type { Item } from '@/types/entity/item'
 import { UpdateItemSchema } from '@/types/form/item'
+import { useRouter } from 'next/router'
 
 type ItemsProps = {
   items: Item[]
@@ -19,11 +20,9 @@ type ItemsProps = {
 function Items({ items: fetchedItems }: ItemsProps) {
   const theme = useTheme()
   const [items, setItems] = useState(fetchedItems)
-  const [itemsChecklist, setItemsChecklist] = useState(createNewItemsChecklist(items))
+  const router = useRouter()
 
-  useEffect(() => {
-    setItemsChecklist(createNewItemsChecklist(items))
-  }, [items])
+  // useEffect(() => {}, [items])
 
   const createAddQuantity = (itemIndex: number) => {
     return async (toAdd: number) => {
@@ -52,31 +51,32 @@ function Items({ items: fetchedItems }: ItemsProps) {
     }
   }
 
-  const onItemChecked = (isChecked: boolean, i: number) => {
-    setItemsChecklist([...itemsChecklist.slice(0, i), isChecked, ...itemsChecklist.slice(i + 1)])
-  }
-
   return (
-    <section>
+    <section
+      className={`ms-[auto] me-[auto] flex flex-col`}
+      style={{ width: `min(1000px, 100% - ${theme.spacing(2)})`, gap: theme.spacing(4) }}
+    >
       <Typography variant='h3' style={{ marginBlock: theme.spacing(2) }} className='text-center'>
         Your Items
       </Typography>
-      <ul
-        className={`ms-[auto] me-[auto]`}
-        style={{ width: `min(1000px, 100% - ${theme.spacing(2)})` }}
-      >
+      <ul>
         {items.map((item, index) => (
           <li key={item.id}>
             <ItemInList
               item={item}
-              isChecked={itemsChecklist[index]}
-              onChecked={(isChecked, _) => onItemChecked(isChecked, index)}
               addQuantity={createAddQuantity(index)}
               deleteItem={createDeleteItem(index)}
             />
           </li>
         ))}
       </ul>
+      <Button
+        variant='contained'
+        className='grow-0 self-start'
+        onClick={() => router.push('/items/register')}
+      >
+        Add New
+      </Button>
     </section>
   )
 }
@@ -89,7 +89,7 @@ export const getServerSideProps = withServerSideHooks<ItemsProps>(async (context
     return {
       redirect: {
         destination: '/',
-        permanent: false,
+        permanent: true,
       },
     }
   }
@@ -104,20 +104,12 @@ export const getServerSideProps = withServerSideHooks<ItemsProps>(async (context
   }
 })
 
-function createNewItemsChecklist(items: Item[]) {
-  return Array<boolean>(items.length).fill(false)
-}
-
 function ItemInList({
   item,
-  isChecked,
-  onChecked,
   addQuantity,
   deleteItem,
 }: {
   item: Item
-  isChecked: boolean
-  onChecked: (isChecked: boolean, item: Item) => void
   addQuantity: (toAdd: number) => void
   deleteItem: () => Promise<void>
 }) {
@@ -127,16 +119,11 @@ function ItemInList({
     <Box
       className='grid justify-items-start items-center text-white'
       style={{
-        gridTemplateColumns: theme.spacing('auto', '1fr', 6, 'auto'),
+        gridTemplateColumns: theme.spacing('1fr', 6, 'auto'),
         gap: theme.spacing(1),
-        padding: theme.spacing(0, 2),
+        padding: theme.spacing(0.5, 2),
       }}
     >
-      <Checkbox
-        onChange={(_, isChecked) => onChecked(isChecked, item)}
-        checked={isChecked}
-        color='primary'
-      />
       <Typography>{item.name}</Typography>
       <Typography className='justify-self-end'>{item.quantity}</Typography>
       <Box className='flex flex-row items-center text-2xl'>
