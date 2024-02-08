@@ -117,7 +117,7 @@ function ItemInList({
 
   return (
     <Box
-      className='grid justify-items-start items-center text-white'
+      className='grid justify-items-start items-center'
       style={{
         gridTemplateColumns: theme.spacing('1fr', 6, 'auto'),
         gap: theme.spacing(1),
