@@ -54,7 +54,7 @@ function Items({ items: fetchedItems }: ItemsProps) {
   return (
     <section
       className={`ms-[auto] me-[auto] flex flex-col`}
-      style={{ width: `min(1000px, 100% - ${theme.spacing(2)})`, gap: theme.spacing(4) }}
+      style={{ width: `min(1000px, 100% - ${theme.spacing(8)})`, gap: theme.spacing(4) }}
     >
       <Typography variant='h3' style={{ marginBlock: theme.spacing(2) }} className='text-center'>
         Your Items
@@ -114,6 +114,7 @@ function ItemInList({
   deleteItem: () => Promise<void>
 }) {
   const theme = useTheme()
+  const router = useRouter()
 
   return (
     <Box
@@ -140,6 +141,7 @@ function ItemInList({
         <Edit
           fontSize='inherit'
           className='!transition-transform hover:scale-125 hover:cursor-pointer'
+          onClick={() => router.push(`/items/${item.id}/edit`)}
         />
         <Delete
           fontSize='inherit'

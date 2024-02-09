@@ -62,16 +62,29 @@ export async function removeItem(params: { ownerId: string; id: string }) {
   await docRef.delete()
 }
 
+export async function getItem(params: { id: string; ownerId: string }) {
+  const { id, ownerId } = params
+
+  const docRef = itemCollection.doc(id)
+  if (!(await isOwner(ownerId, docRef))) throw new InventoryAppServerError('Unauthorized', 401)
+
+  const item = (await docRef.get()).data()
+
+  if (!item) throw new InventoryAppServerError('Failed to get item')
+
+  return item
+}
+
 async function getDocumentSnapshotById(
   collectionRef: FirebaseFirestore.CollectionReference<Item>,
   id: string,
   ownerId?: string,
 ) {
-  const documentRef = collectionRef.doc(id)
+  const docRef = collectionRef.doc(id)
   // not owner
-  if (ownerId && !(await isOwner(ownerId, documentRef))) return undefined
+  if (ownerId && !(await isOwner(ownerId, docRef))) return undefined
 
-  const snapshot = await documentRef.get()
+  const snapshot = await docRef.get()
 
   return snapshot.exists ? snapshot : undefined
 }
@@ -93,6 +106,9 @@ async function isOwner<T extends { ownerId: string }>(
   ownerId: string,
   docRef: FirebaseFirestore.DocumentReference<T>,
 ) {
-  const data = (await docRef.get()).data()
+  const snapshot = await docRef.get()
+  if (!snapshot.exists) return false
+
+  const data = snapshot.data()
   return data && data.ownerId === ownerId
 }

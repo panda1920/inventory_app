@@ -1,36 +1,43 @@
 import { Box, Button, Typography, useTheme } from '@mui/material'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/router'
+import { useForm } from 'react-hook-form'
 import { useSnackbar } from 'notistack'
+import { useRouter } from 'next/router'
 
+import { Item } from '@/types/entity/item'
 import withAuth from '@/components/hoc/with-auth/withAuth'
 import { withServerSideHooks } from '@/helper/serverside-hooks'
-import { RegisterItemSchema, registerItemSchema } from '@/types/form/item'
+import { getItem } from '@/handlers/item'
+import { InventoryAppBaseError, InventoryAppClientError } from '@/helper/errors'
+import { UpdateItemSchema, updateItemSchema } from '@/types/form/item'
 import Input from '@/components/form/input/input'
-import { InventoryAppClientError } from '@/helper/errors'
 
-function RegisterItem() {
+type EditItemProps = {
+  item: Item
+}
+
+function EditItem({ item }: EditItemProps) {
   const theme = useTheme()
   const router = useRouter()
   const { enqueueSnackbar } = useSnackbar()
-  const { reset, control, formState, handleSubmit } = useForm<RegisterItemSchema>({
-    resolver: zodResolver(registerItemSchema),
+  const { reset, control, formState, handleSubmit } = useForm<UpdateItemSchema>({
+    resolver: zodResolver(updateItemSchema),
     defaultValues: {
-      name: '',
-      quantity: 1,
-      memo: '',
+      name: item.name,
+      quantity: item.quantity,
+      memo: item.memo,
+      sortOrder: item.sortOrder,
     },
   })
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await registerItem(data)
-      enqueueSnackbar('You have registered an item', { variant: 'success' })
+      await updateItem(String(router.query.id), data)
+      enqueueSnackbar('You have updated an item', { variant: 'success' })
       navigateBack()
     } catch (e) {
       reset()
-      enqueueSnackbar('Registration failed.\nPlease try again', { variant: 'error' })
+      enqueueSnackbar('Update failed.\nPlease try again', { variant: 'error' })
     }
   })
 
@@ -41,8 +48,8 @@ function RegisterItem() {
       className={`ms-[auto] me-[auto] flex flex-col`}
       style={{ width: `min(1000px, 100% - ${theme.spacing(8)})`, gap: theme.spacing(4) }}
     >
-      <Typography variant='h3' className='text-center' style={{ marginBlock: theme.spacing(2) }}>
-        Register Item
+      <Typography variant='h3' style={{ marginBlock: theme.spacing(2) }} className='text-center'>
+        Edit Item
       </Typography>
 
       <form
@@ -70,7 +77,7 @@ function RegisterItem() {
             disabled={formState.isSubmitting}
             variant='contained'
           >
-            Add
+            Update
           </Button>
           <Button
             type='button'
@@ -88,29 +95,38 @@ function RegisterItem() {
   )
 }
 
-export default withAuth(RegisterItem)
+export default withAuth(EditItem)
 
-export const getServerSideProps = withServerSideHooks(async (context) => {
+export const getServerSideProps = withServerSideHooks<EditItemProps>(async (context) => {
   // unauthenticated
-  if (!context.user) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: true,
-      },
-    }
-  }
+  if (!context.user) return redirectToTop()
 
-  return {
-    props: {},
+  try {
+    const id = String(context.params?.id)
+    const item = await getItem({ id, ownerId: context.user.uid })
+    return {
+      props: { item },
+    }
+  } catch (e) {
+    if (e instanceof InventoryAppBaseError) console.error(e.message)
+    return redirectToTop()
   }
 })
 
-async function registerItem(payload: RegisterItemSchema) {
-  const url = '/api/items'
+function redirectToTop() {
+  return {
+    redirect: {
+      destination: '/',
+      permanent: true,
+    },
+  }
+}
+
+async function updateItem(id: string, payload: UpdateItemSchema) {
+  const url = `/api/items/${id}`
 
   const response = await fetch(url, {
-    method: 'POST',
+    method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -120,7 +136,7 @@ async function registerItem(payload: RegisterItemSchema) {
 
   if (!response.ok) {
     console.error(JSON.stringify(responseJson))
-    throw new InventoryAppClientError('Failed to call POST /api/items')
+    throw new InventoryAppClientError(`Failed to call PATCH /api/items/${id}`)
   }
 
   return responseJson
