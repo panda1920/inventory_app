@@ -29,7 +29,7 @@ function Items({ items: fetchedItems }: ItemsProps) {
       const item = items[itemIndex]
 
       try {
-        await updateItem(item.id!, { quantity: item.quantity + toAdd })
+        await updateItem(item.id!, { ...item, quantity: item.quantity + toAdd })
         item.quantity += toAdd
         setItems([...items.slice(0, itemIndex), item, ...items.slice(itemIndex + 1)])
       } catch (e) {
@@ -121,7 +121,7 @@ function ItemInList({
       style={{
         gridTemplateColumns: theme.spacing('1fr', 6, 'auto'),
         gap: theme.spacing(1),
-        padding: theme.spacing(0.5, 2),
+        padding: theme.spacing(0.5, 0),
       }}
     >
       <Typography>{item.name}</Typography>

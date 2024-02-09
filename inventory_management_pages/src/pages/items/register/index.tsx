@@ -19,6 +19,7 @@ function RegisterItem() {
     defaultValues: {
       name: '',
       quantity: 1,
+      memo: '',
     },
   })
 
@@ -51,6 +52,14 @@ function RegisterItem() {
       >
         <Input label='name' name='name' type='text' color='primary' control={control} />
         <Input label='quantity' name='quantity' type='number' control={control} />
+        <Input
+          label='memo'
+          name='memo'
+          type='text'
+          multiline={true}
+          control={control}
+          minRows={3}
+        />
         <Box className='flex flex-row content-start' style={{ gap: theme.spacing(2) }}>
           <Button
             type='submit'

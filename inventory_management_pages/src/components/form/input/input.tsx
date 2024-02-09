@@ -1,5 +1,5 @@
 import TextField from '@mui/material/TextField'
-import React, { ComponentProps, SyntheticEvent } from 'react'
+import React, { ComponentProps } from 'react'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
 
 type InputProps<T extends FieldValues> = ComponentProps<typeof TextField> & {

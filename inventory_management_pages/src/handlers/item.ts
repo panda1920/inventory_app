@@ -7,6 +7,7 @@ import { Item } from '@/types/entity/item'
 import { RegisterItemSchema, UpdateItemSchema } from '@/types/form/item'
 
 const itemCollection = getCollection<Item>('items')
+const addItemCollection = getCollection<Omit<Item, 'id'>>('items')
 
 export async function listItems(params: GetListQueryParameterSchema & { ownerId: string }) {
   const { ownerId, start_after, limit } = params
@@ -31,7 +32,7 @@ export async function registerItem(params: RegisterItemSchema & { ownerId: strin
 
   const sortOrder = await getMaxPlus1SortOrder(itemCollection, ownerId)
 
-  const itemRef = await itemCollection.add({
+  const itemRef = await addItemCollection.add({
     ...registerParams,
     ownerId,
     sortOrder,

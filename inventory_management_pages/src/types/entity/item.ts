@@ -1,8 +1,3 @@
-export type Item = {
-  id?: string
-  name: string
-  quantity: number
-  ownerId: string
-  sortOrder: number
-  createdAt: string
-}
+import { UpdateItemSchema } from '@/types/form/item'
+
+export type Item = CommonEntity & UpdateItemSchema
