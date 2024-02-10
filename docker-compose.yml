@@ -3,7 +3,7 @@ version: "3.8"
 services:
   app:
     build:
-      dockerfile: docker/Dockerfile.dev
+      dockerfile: docker/Dockerfile
       context: ./inventory_management_pages
     image: inventory_app:dev
     container_name: inventory-app-pages

@@ -22,7 +22,7 @@ export const db = getFirestore(app)
 export const converter = <
   T extends FirebaseFirestore.DocumentData,
 >(): FirestoreDataConverter<T> => ({
-  toFirestore: (data: T) => {
+  toFirestore: (data) => {
     // remove id when inserting data
     const { id, ...rest } = data
     return rest

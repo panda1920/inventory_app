@@ -38,7 +38,7 @@ export async function registerItem(params: RegisterItemSchema & { ownerId: strin
     sortOrder,
     createdAt: FieldValue.serverTimestamp(),
   })
-  const item = (await itemRef.get()).data()
+  const item = (await itemRef.get()).data() as Item
   if (!item) throw new InventoryAppServerError('Failed to register item')
 
   return item

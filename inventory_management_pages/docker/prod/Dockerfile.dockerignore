@@ -1,0 +1,12 @@
+# env
+.env.local
+
+# dependency
+node_modules/
+
+# everything except built file
+docker/
+src/
+*.js
+*.ts
+*.json
