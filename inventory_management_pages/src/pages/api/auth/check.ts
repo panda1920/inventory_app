@@ -1,7 +1,8 @@
+import { NextApiRequest, NextApiResponse } from 'next'
+
 import { HandlerSpecByMethods, createCommonApiHandler } from '@/helper/api'
 import { auth } from '@/helper/firebase-admin'
 import { FailResponse, SuccessResponse } from '@/types/api/common'
-import { NextApiRequest, NextApiResponse } from 'next'
 
 type Data = SuccessResponse | FailResponse
 
