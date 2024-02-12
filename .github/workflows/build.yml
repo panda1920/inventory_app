@@ -28,11 +28,17 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: "./inventory_management_pages"
+        working-directory: "./inventory_management/inventory_management_pages"
     steps:
+      - name: "Checking pwd"
+        run: |
+          pwd
+          echo ${{ github.workspace }}
+          echo $GITHUB_WORKSPACE
       - name: "Pull repository code"
         uses: actions/checkout@v4
-        working-directory: ${{ github.workspace }}
+        with:
+          path: ../../
       - name: "Make sure that code is pulled correctly"
         run: |
           pwd
