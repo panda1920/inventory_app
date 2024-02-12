@@ -18,7 +18,6 @@ on:
 
 # define jobs that need to be executed
 jobs:
-  # TODO: authenticate as AWS user
   # TODO: push to ecr
   build:
     runs-on: ubuntu-latest
@@ -26,7 +25,8 @@ jobs:
       FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
       FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
       FIREBASE_PRIVATE_KEY_BASE64: ${{ secrets.FIREBASE_PRIVATE_KEY_BASE64 }}
-      IMAGE_NAME: inventory-app
+      REPOSITORY_NAME: ${{ secrets.AWS_ECR_REPOSITORY_NAME }}
+      IMAGE_TAG: prod
       WORKING_DIRECTORY: inventory_management_pages
     defaults:
       run:
@@ -34,35 +34,56 @@ jobs:
     steps:
       - name: "Pull repository code"
         uses: actions/checkout@v4
+
       - name: "Make sure that code is pulled correctly"
         run: |
           pwd
           ls -al ../
           ls -al
+
       - name: "Setup nodejs"
         uses: actions/setup-node@v4
         with:
           node-version: 18
+
       - name: "Restore cached dependencies"
         id: restore_cache
         uses: actions/cache@v4
         with:
           path: ${{ env.WORKING_DIRECTORY }}/node_modules
           key: "cache-node_modules-${{ runner.os }}-node18-${{ hashFiles(format('{0}{1}', env.WORKING_DIRECTORY, '/package-lock.json')) }}"
+
       - name: "Install dependencies"
-        if: ${{ !steps.restore_cache.outputs.cache-hit != 'true' }}
+        if: ${{ steps.restore_cache.outputs.cache-hit != 'true' }}
         run: npm ci
+
       - name: "Save dependencies as cache"
         id: save_cache
         uses: actions/cache@v4
         with:
           path: ${{ env.WORKING_DIRECTORY }}/node_modules
           key: "cache-node_modules-${{ runner.os }}-node18-${{ hashFiles(format('{0}{1}', env.WORKING_DIRECTORY, '/package-lock.json')) }}"
-      # - name: "Build the app / create docker image"
-      #   run: bash docker/prod/build.sh ${IMAGE_NAME}:prod
+
+      - name: "Build the app / create docker image"
+        run: |
+          bash docker/prod/build.sh ${REPOSITORY_NAME}:${IMAGE_TAG}
+          docker tag ${REPOSITORY_NAME}:${IMAGE_TAG} ${REPOSITORY_NAME}:${{ github.sha }}
+          docker image ls
+
       - name: "Configure AWS"
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ap-northeast-1
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET }}
+
+      - name: "Login to ECR"
+        id: login_ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: "Push docker image to ECR"
+        env:
+          REGISTRY: ${{ steps.login_ecr.outputs.registry }}
+        run: |
+          docker push ${REPOSITORY_NAME}:${IMAGE_TAG}
+          docker push ${REPOSITORY_NAME}:${{ github.sha }}
