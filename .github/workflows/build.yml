@@ -67,8 +67,8 @@ jobs:
 
       - name: "Build the app / create docker image"
         run: |
-          bash docker/prod/build.sh ${REPOSITORY_NAME}:${IMAGE_TAG}
-          docker tag ${REPOSITORY_NAME}:${IMAGE_TAG} ${REPOSITORY_NAME}:${{ github.sha }}
+          bash docker/prod/build.sh ${REGISTRY}/${REPOSITORY_NAME}:${IMAGE_TAG}
+          docker tag ${REGISTRY}/${REPOSITORY_NAME}:${IMAGE_TAG} ${REGISTRY}/${REPOSITORY_NAME}:${{ github.sha }}
           docker image ls
 
       - name: "Configure AWS"
