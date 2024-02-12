@@ -32,11 +32,6 @@ jobs:
     steps:
       - name: "Pull repository code"
         uses: actions/checkout@v4
-      - name: "Checking pwd"
-        run: |
-          pwd
-          echo ${{ github.workspace }}
-          echo $GITHUB_WORKSPACE
       - name: "Make sure that code is pulled correctly"
         run: |
           pwd
@@ -48,5 +43,5 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-      # - name: "Install dependencies"
-      #   run: npm ci
+      - name: "Install dependencies"
+        run: npm ci
