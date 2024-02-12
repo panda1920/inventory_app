@@ -65,12 +65,6 @@ jobs:
           path: ${{ env.WORKING_DIRECTORY }}/node_modules
           key: "cache-node_modules-${{ runner.os }}-node18-${{ hashFiles(format('{0}{1}', env.WORKING_DIRECTORY, '/package-lock.json')) }}"
 
-      - name: "Build the app / create docker image"
-        run: |
-          bash docker/prod/build.sh ${REGISTRY}/${REPOSITORY_NAME}:${IMAGE_TAG}
-          docker tag ${REGISTRY}/${REPOSITORY_NAME}:${IMAGE_TAG} ${REGISTRY}/${REPOSITORY_NAME}:${{ github.sha }}
-          docker image ls
-
       - name: "Configure AWS"
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -81,10 +75,13 @@ jobs:
       - name: "Login to ECR"
         id: login_ecr
         uses: aws-actions/amazon-ecr-login@v2
-
-      - name: "Push docker image to ECR"
+      
+      - name: "Build the docker image of app and push to ECR"
         env:
           REGISTRY: ${{ steps.login_ecr.outputs.registry }}
         run: |
+          bash docker/prod/build.sh ${REGISTRY}/${REPOSITORY_NAME}:${IMAGE_TAG}
+          docker tag ${REGISTRY}/${REPOSITORY_NAME}:${IMAGE_TAG} ${REGISTRY}/${REPOSITORY_NAME}:${{ github.sha }}
+          docker image ls
           docker push ${REGISTRY}/${REPOSITORY_NAME}:${IMAGE_TAG}
           docker push ${REGISTRY}/${REPOSITORY_NAME}:${{ github.sha }}
