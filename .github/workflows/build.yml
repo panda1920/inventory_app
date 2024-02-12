@@ -48,4 +48,4 @@ jobs:
       - name: "Install dependencies"
         run: npm ci
       - name: "Build the app/create docker image"
-        run: bash docker/dev/prod/build.sh ${IMAGE_NAME}:prod
+        run: bash docker/prod/build.sh ${IMAGE_NAME}:prod
