@@ -26,16 +26,22 @@ jobs:
   # TODO: push to ecr
   build:
     runs-on: ubuntu-latest
+    defaults:
+      working-directory: "./inventory_management_pages"
     steps:
       - name: "Pull repository code"
         uses: actions/checkout@v4
+        working-directory: ${{ github.workspace }}
       - name: "Make sure that code is pulled correctly"
         run: |
+          pwd
+          ls -al ../
           ls -al
-          ls -al ./inventory_management_pages
+          echo $GITHUB_WORKSPACE
+          echo ${{ github.workspace }}
       - name: "Setup node"
         uses: actions/setup-node@v4
         with:
           node-version: 18
-      - name: "Install dependencies"
-        run: npm ci
+      # - name: "Install dependencies"
+      #   run: npm ci
