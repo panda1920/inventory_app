@@ -18,11 +18,9 @@ on:
 
 # define jobs that need to be executed
 jobs:
-  # TODO: get repository to work
-  # TODO: confirm that code is pulled by running ls command
-  # TODO: registering secrets
   # TODO: install dependencies
   # TODO BONUS: save dependencies so it can be reused later
+  # TODO: registering secrets
   # TODO: build the app
   # TODO: authenticate as AWS user
   # TODO: push to ecr
@@ -35,3 +33,9 @@ jobs:
         run: |
           ls -al
           ls -al ./inventory_management_pages
+      - name: "Setup node"
+        uses: actions/setup-node@v4
+        with:
+          node_version: 18
+      - name: "Install dependencies"
+        run: npm ci
