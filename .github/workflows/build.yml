@@ -27,7 +27,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     defaults:
-      working-directory: "./inventory_management_pages"
+      run:
+        working-directory: "./inventory_management_pages"
     steps:
       - name: "Pull repository code"
         uses: actions/checkout@v4
