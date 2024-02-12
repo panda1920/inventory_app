@@ -32,4 +32,4 @@ jobs:
       - name: "Pull repository code"
         uses: actions/checkout@v4
       - name: "Make sure that code is pulled correctly"
-        run: echo ls -al
+        run: ls -al
