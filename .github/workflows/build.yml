@@ -1,0 +1,35 @@
+# workflow to build the app into a production docker image
+name: "Production build"
+run-name: "Building the app for: ${{ github.event_name }} / ${{ github.event.head_commit.message || github.event.inputs.message || '---' }}"
+
+# specify events that trigger workflow
+on:
+  push:
+  # TODO: add path filter so it only triggers to file changes to a specific directory
+    branches:
+      - 'master'
+  # for manual execution, the workflow must be in the default branch
+  workflow_dispatch:
+    inputs:
+      message:
+        description: "An optional message for the build"
+        required: false
+        type: string
+
+# define jobs that need to be executed
+jobs:
+  # TODO: get repository to work
+  # TODO: confirm that code is pulled by running ls command
+  # TODO: registering secrets
+  # TODO: install dependencies
+  # TODO BONUS: save dependencies so it can be reused later
+  # TODO: build the app
+  # TODO: authenticate as AWS user
+  # TODO: push to ecr
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Pull repository code"
+        uses: actions/checkout@v4
+      - name: "Make sure that code is pulled correctly"
+        run: echo ls -al
