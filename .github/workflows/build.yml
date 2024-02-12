@@ -32,4 +32,6 @@ jobs:
       - name: "Pull repository code"
         uses: actions/checkout@v4
       - name: "Make sure that code is pulled correctly"
-        run: ls -al
+        run: |
+          ls -al
+          ls -al ./inventory_management_pages
