@@ -30,13 +30,13 @@ jobs:
       run:
         working-directory: inventory_management_pages
     steps:
+      - name: "Pull repository code"
+        uses: actions/checkout@v4
       - name: "Checking pwd"
         run: |
           pwd
           echo ${{ github.workspace }}
           echo $GITHUB_WORKSPACE
-      - name: "Pull repository code"
-        uses: actions/checkout@v4
       - name: "Make sure that code is pulled correctly"
         run: |
           pwd
