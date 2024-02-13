@@ -77,12 +77,12 @@ jobs:
         id: login_ecr
         uses: aws-actions/amazon-ecr-login@v2
       
-      # - name: "Build the docker image of app and push to ECR"
-      #   env:
-      #     REGISTRY: ${{ steps.login_ecr.outputs.registry }}
-      #   run: |
-      #     bash docker/prod/build.sh ${REGISTRY}/${REPOSITORY_NAME}:${IMAGE_TAG}
-      #     docker tag ${REGISTRY}/${REPOSITORY_NAME}:${IMAGE_TAG} ${REGISTRY}/${REPOSITORY_NAME}:${{ github.sha }}
-      #     docker image ls
-      #     docker push ${REGISTRY}/${REPOSITORY_NAME}:${IMAGE_TAG}
-      #     docker push ${REGISTRY}/${REPOSITORY_NAME}:${{ github.sha }}
+      - name: "Build the docker image of app and push to ECR"
+        env:
+          REGISTRY: ${{ steps.login_ecr.outputs.registry }}
+        run: |
+          bash docker/prod/build.sh ${REGISTRY}/${REPOSITORY_NAME}:${IMAGE_TAG}
+          docker tag ${REGISTRY}/${REPOSITORY_NAME}:${IMAGE_TAG} ${REGISTRY}/${REPOSITORY_NAME}:${{ github.sha }}
+          docker image ls
+          docker push ${REGISTRY}/${REPOSITORY_NAME}:${IMAGE_TAG}
+          docker push ${REGISTRY}/${REPOSITORY_NAME}:${{ github.sha }}
