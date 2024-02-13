@@ -5,9 +5,11 @@ run-name: "Building the app for: [${{ github.event_name }}] ${{ github.event.hea
 # specify events that trigger workflow
 on:
   push:
-  # TODO: add path filter so it only triggers to file changes to a specific directory
+  # TODO: add path filter so it only triggers to file changes of a specific directory
     branches:
       - 'master'
+    paths:
+      - 'inventory_management_pages/*'
   # for manual execution, the workflow must be in the default branch
   workflow_dispatch:
     inputs:
@@ -18,7 +20,6 @@ on:
 
 # define jobs that need to be executed
 jobs:
-  # TODO: push to ecr
   build:
     runs-on: ubuntu-latest
     env:
@@ -76,12 +77,12 @@ jobs:
         id: login_ecr
         uses: aws-actions/amazon-ecr-login@v2
       
-      - name: "Build the docker image of app and push to ECR"
-        env:
-          REGISTRY: ${{ steps.login_ecr.outputs.registry }}
-        run: |
-          bash docker/prod/build.sh ${REGISTRY}/${REPOSITORY_NAME}:${IMAGE_TAG}
-          docker tag ${REGISTRY}/${REPOSITORY_NAME}:${IMAGE_TAG} ${REGISTRY}/${REPOSITORY_NAME}:${{ github.sha }}
-          docker image ls
-          docker push ${REGISTRY}/${REPOSITORY_NAME}:${IMAGE_TAG}
-          docker push ${REGISTRY}/${REPOSITORY_NAME}:${{ github.sha }}
+      # - name: "Build the docker image of app and push to ECR"
+      #   env:
+      #     REGISTRY: ${{ steps.login_ecr.outputs.registry }}
+      #   run: |
+      #     bash docker/prod/build.sh ${REGISTRY}/${REPOSITORY_NAME}:${IMAGE_TAG}
+      #     docker tag ${REGISTRY}/${REPOSITORY_NAME}:${IMAGE_TAG} ${REGISTRY}/${REPOSITORY_NAME}:${{ github.sha }}
+      #     docker image ls
+      #     docker push ${REGISTRY}/${REPOSITORY_NAME}:${IMAGE_TAG}
+      #     docker push ${REGISTRY}/${REPOSITORY_NAME}:${{ github.sha }}
