@@ -5,7 +5,6 @@ run-name: "Building the app for: [${{ github.event_name }}] ${{ github.event.hea
 # specify events that trigger workflow
 on:
   push:
-  # TODO: add path filter so it only triggers to file changes of a specific directory
     branches:
       - 'master'
     paths:

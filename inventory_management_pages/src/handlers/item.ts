@@ -7,7 +7,6 @@ import { Item } from '@/types/entity/item'
 import { RegisterItemSchema, UpdateItemSchema } from '@/types/form/item'
 
 const itemCollection = getCollection<Item>('items')
-const addItemCollection = getCollection<Omit<Item, 'id'>>('items')
 
 export async function listItems(params: GetListQueryParameterSchema & { ownerId: string }) {
   const { ownerId, start_after, limit } = params
@@ -32,13 +31,14 @@ export async function registerItem(params: RegisterItemSchema & { ownerId: strin
 
   const sortOrder = await getMaxPlus1SortOrder(itemCollection, ownerId)
 
-  const itemRef = await addItemCollection.add({
+  const itemRef = await itemCollection.add({
+    id: '', // it gets thrown away so just specify some random id
     ...registerParams,
     ownerId,
     sortOrder,
     createdAt: FieldValue.serverTimestamp(),
   })
-  const item = (await itemRef.get()).data() as Item
+  const item = (await itemRef.get()).data()
   if (!item) throw new InventoryAppServerError('Failed to register item')
 
   return item
