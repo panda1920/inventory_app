@@ -9,7 +9,7 @@ on:
     branches:
       - 'master'
     paths:
-      - 'inventory_management_pages/*'
+      - "inventory_management_pages/**"
   # for manual execution, the workflow must be in the default branch
   workflow_dispatch:
     inputs:
