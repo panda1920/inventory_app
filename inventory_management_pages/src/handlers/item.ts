@@ -65,7 +65,7 @@ export async function getItem(params: { id: string; ownerId: string }) {
 
   const snapshot = await getOwnedSnapshotById(itemCollection, id, ownerId)
 
-  return snapshot.data()
+  return snapshot.data()!
 }
 
 async function getOwnedSnapshotById(
