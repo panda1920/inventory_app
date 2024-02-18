@@ -1,3 +1,5 @@
+const isProduction = process.env.NODE_ENV === 'production'
+
 /**
  * Get value of cookie by name on clientside
  * @param name
@@ -9,16 +11,6 @@ export function getCookie(name: CookieName) {
   if (!found) return null
 
   return found.split('=')[1]
-}
-
-/**
- * Set cookie on clientside
- * Currently setting no expiration time
- * @param name
- * @param value
- */
-export function setCookie(name: CookieName, value: string) {
-  document.cookie = `${name}=${value}; Path=/`
 }
 
 /**
@@ -45,13 +37,16 @@ export function eraseCookieString(name: CookieName) {
  * @returns
  */
 export function setCookieString(name: CookieName, value: string) {
-  const secureOption = process.env.NODE_ENV === 'production' ? 'Secure' : ''
+  const secureOption = isProduction ? 'Secure' : ''
   return `${name}=${value}; Path=/; SameSite=Lax; HttpOnly; ${secureOption}`
 }
 
+// https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#cookie_prefixes
+const cookiePrefix = isProduction ? '__Host-' : ''
+
 export const cookieNames = {
-  tokenCookie: 'token',
-  sessionCookie: 'INVENTORY_APP_SESSION',
+  tokenCookie: cookiePrefix + 'token',
+  sessionCookie: cookiePrefix + 'INVENTORY_APP_SESSION',
 } as const
 
 export type CookieName = (typeof cookieNames)[keyof typeof cookieNames]
