@@ -1,5 +1,5 @@
 import { createTheme, ThemeProvider } from '@mui/material'
-import { SnackbarProvider } from 'notistack'
+import { SnackbarKey, SnackbarProvider, useSnackbar } from 'notistack'
 import { Provider as ReduxProvider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { ReactNode } from 'react'
@@ -21,15 +21,28 @@ export default function Provider({ children }: { children: ReactNode }) {
   return (
     <ReduxProvider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <SnackbarProvider
-          maxSnack={3}
-          autoHideDuration={5000}
-          anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-          preventDuplicate
-        >
-          <ThemeProvider theme={customTheme}>{children}</ThemeProvider>
-        </SnackbarProvider>
+        <ThemeProvider theme={customTheme}>
+          <SnackbarProvider
+            maxSnack={3}
+            autoHideDuration={300000}
+            anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+            preventDuplicate
+            action={Dismiss}
+          >
+            {children}
+          </SnackbarProvider>
+        </ThemeProvider>
       </PersistGate>
     </ReduxProvider>
+  )
+}
+
+function Dismiss(snackbarId: SnackbarKey) {
+  const { closeSnackbar } = useSnackbar()
+
+  return (
+    <button onClick={() => closeSnackbar(snackbarId)} className='pr-[8px]'>
+      Dismiss
+    </button>
   )
 }
