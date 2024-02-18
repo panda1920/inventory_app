@@ -6,8 +6,9 @@ services:
       dockerfile: docker/Dockerfile
       context: ./inventory_management_pages
     image: inventory_app:dev
+    # image: inventory_app:prod
     container_name: inventory-app-pages
-    # command: bash
+    # command: "ls -al"
     tty: true
     stdin_open: true
     restart: on-failure
