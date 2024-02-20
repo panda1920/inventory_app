@@ -6,7 +6,31 @@ import { ReactNode } from 'react'
 
 import store, { persistor } from '@/store/store'
 
+// https://mui.com/material-ui/customization/theming/
 const customTheme = createTheme({
+  // https://mui.com/material-ui/guides/typescript/#customization-of-theme
+  palette: {
+    primary: { main: '#A7CECB' },
+    secondary: { main: '#75704E' },
+    tertiary: { main: '#FFEDE1' },
+    // primary: { main: '#435058' },
+    // background: { main: '#FFEDE1' },
+    error: { main: '#B7245C' },
+  },
+  // customize breakpoints so it aligns with tailwind values
+  // https://tailwindcss.com/docs/responsive-design
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+    },
+  },
+  typography: {
+    fontSize: 12,
+  },
   components: {
     MuiTypography: {
       variants: [
@@ -24,7 +48,7 @@ export default function Provider({ children }: { children: ReactNode }) {
         <ThemeProvider theme={customTheme}>
           <SnackbarProvider
             maxSnack={3}
-            autoHideDuration={300000}
+            autoHideDuration={3000}
             anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
             preventDuplicate
             action={Dismiss}
