@@ -1,22 +1,18 @@
-import LoginIcon from '@mui/icons-material/Login'
 import MenuIcon from '@mui/icons-material/Menu'
-import { AppBar, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material'
-import { styled } from '@mui/material/styles'
+import { AppBar, IconButton, Toolbar, Typography, useTheme } from '@mui/material'
 import { MouseEvent, useState } from 'react'
 
 import LoginModal from '@/components/modal/login/login-modal'
 import SignupModal from '@/components/modal/signup/signup-modal'
 import { useAuth } from '@/hooks/auth'
-import { useAppSelector } from '@/store/hooks'
-import { checkLogin, getUsername } from '@/store/slice/user'
+import DropdownMenu from '@/components/header/dropdown-menu'
 
 export default function Header() {
   const [isLoginOpen, setLoginOpen] = useState(false)
   const [isSignupOpen, setSignupOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
-  const isLoggedIn = useAppSelector(checkLogin)
-  const username = useAppSelector(getUsername)
   const { logoutFromBackend } = useAuth({ afterLogoutAction: closeMenu })
+  const theme = useTheme()
 
   function openMenu(event: MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget)
@@ -38,28 +34,24 @@ export default function Header() {
   return (
     <>
       <AppBar position='static'>
-        <SyledToolbar>
+        <Toolbar
+          className='flex flex-row justify-between'
+          style={{ paddingInline: theme.spacing(6), paddingBlock: theme.spacing(2) }}
+        >
           <Typography variant='h3'>Header</Typography>
-
-          {username && <Typography variant='body1'>{username}</Typography>}
 
           <IconButton aria-label='hamburger-menu' size='medium' onClick={openMenu}>
             <MenuIcon fontSize='inherit' />
           </IconButton>
-          <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={closeMenu}>
-            {isLoggedIn ? (
-              <StyledMenuItem onClick={logoutFromBackend}>
-                <LoginIcon fontSize='medium' />
-                <Typography>Logout</Typography>
-              </StyledMenuItem>
-            ) : (
-              <StyledMenuItem onClick={login}>
-                <LoginIcon fontSize='medium' />
-                <Typography>Login</Typography>
-              </StyledMenuItem>
-            )}
-          </Menu>
-        </SyledToolbar>
+
+          <DropdownMenu
+            anchorElement={anchorEl}
+            isOpen={!!anchorEl}
+            onClose={closeMenu}
+            onLogin={login}
+            onLogout={logoutFromBackend}
+          />
+        </Toolbar>
       </AppBar>
 
       <LoginModal isOpen={isLoginOpen} close={() => setLoginOpen(false)} openSignup={signup} />
@@ -67,23 +59,3 @@ export default function Header() {
     </>
   )
 }
-
-const SyledToolbar = styled(Toolbar)(({ theme }) => {
-  return {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    // https://github.com/mui/material-ui/issues/28911
-    // needs extra specificity to modify certain css properties
-    paddingInline: `${theme.spacing(6)} !important`,
-  }
-})
-
-const StyledMenuItem = styled(MenuItem)(() => {
-  return {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'start',
-    gap: '1em',
-  }
-})
