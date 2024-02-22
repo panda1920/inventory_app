@@ -1,10 +1,10 @@
 import { SnackbarKey, SnackbarProvider, useSnackbar } from 'notistack'
+import { ReactNode } from 'react'
 import { Provider as ReduxProvider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
-import { ReactNode } from 'react'
 
-import store, { persistor } from '@/store/store'
 import MaterialProvider from '@/components/app/material-provider'
+import store, { persistor } from '@/store/store'
 
 export default function Provider({ children }: { children: ReactNode }) {
   return (

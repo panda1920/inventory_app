@@ -11,8 +11,10 @@
         "groups": ["builtin", "external"],
         "pathGroups": [{ "pattern": "@/**", "group": "internal" }],
         "newlines-between": "always",
+        "alphabetize": { "order": "asc" },
         "warnOnUnassignedImports": true
       }
-    ]
+    ],
+    "import/newline-after-import": ["warn", { "count": 1, "considerComments": true }]
   }
 }

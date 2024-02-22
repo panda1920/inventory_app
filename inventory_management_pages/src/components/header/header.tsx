@@ -2,10 +2,10 @@ import MenuIcon from '@mui/icons-material/Menu'
 import { AppBar, IconButton, Toolbar, Typography, useTheme } from '@mui/material'
 import { MouseEvent, useState } from 'react'
 
+import DropdownMenu from '@/components/header/dropdown-menu'
 import LoginModal from '@/components/modal/login/login-modal'
 import SignupModal from '@/components/modal/signup/signup-modal'
 import { useAuth } from '@/hooks/auth'
-import DropdownMenu from '@/components/header/dropdown-menu'
 
 export default function Header() {
   const [isLoginOpen, setLoginOpen] = useState(false)

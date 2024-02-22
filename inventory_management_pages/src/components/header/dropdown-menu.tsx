@@ -1,17 +1,17 @@
-import LoginIcon from '@mui/icons-material/Login'
-import LightMode from '@mui/icons-material/LightMode'
 import DarkMode from '@mui/icons-material/DarkMode'
+import LightMode from '@mui/icons-material/LightMode'
+import LoginIcon from '@mui/icons-material/Login'
 import PersonIcon from '@mui/icons-material/Person'
+import { Switch, useTheme } from '@mui/material'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
-import { Switch, useTheme } from '@mui/material'
 
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { checkLogin, getUsername } from '@/store/slice/user'
 import { getColorScheme, toggleColorScheme } from '@/store/slice/app'
+import { checkLogin, getUsername } from '@/store/slice/user'
 
 type DropdownMenuProps = {
   anchorElement: HTMLElement | null

@@ -11,9 +11,9 @@ import {
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
+import appSlice from '@/store/slice/app'
 import counterSlice from '@/store/slice/counter'
 import userSlice from '@/store/slice/user'
-import appSlice from '@/store/slice/app'
 
 // https://github.com/rt2zz/redux-persist/blob/master/docs/api.md#type-persistconfig
 const persistConfig = {
