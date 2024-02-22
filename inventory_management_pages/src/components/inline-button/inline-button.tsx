@@ -1,7 +1,5 @@
 import { ReactNode } from 'react'
 
-import styles from './inline-button.module.css'
-
 type InlineButtonProps = {
   children?: ReactNode
   onClick?: () => void | Promise<void>
@@ -9,7 +7,7 @@ type InlineButtonProps = {
 
 export default function InlineButton({ children, onClick }: InlineButtonProps) {
   return (
-    <button className={styles.inlineButton} onClick={onClick}>
+    <button onClick={onClick} className='appearance-none inline underline cursor-pointer'>
       {children}
     </button>
   )
