@@ -41,7 +41,7 @@ export default function Header() {
           <Typography variant='h3'>Header</Typography>
 
           <IconButton aria-label='hamburger-menu' size='medium' onClick={openMenu}>
-            <MenuIcon fontSize='inherit' />
+            <MenuIcon fontSize='inherit' htmlColor={theme.palette.primary.contrastText} />
           </IconButton>
 
           <DropdownMenu
