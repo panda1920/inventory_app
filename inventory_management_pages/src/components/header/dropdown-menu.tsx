@@ -8,6 +8,7 @@ import Divider from '@mui/material/Divider'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
+import clsx from 'clsx'
 
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { getColorScheme, toggleColorScheme } from '@/store/slice/app'
@@ -44,12 +45,12 @@ export default function DropdownMenu({
             <Typography variant='h6'>{username}</Typography>
           </Box>
         </MenuItem>
-        <Divider variant='middle' />
+        <Divider variant='middle' style={{ borderColor: theme.palette.primary.main }} />
         <MenuItem onClick={onLogout} className='flex flex-row justify-start gap-[1em]'>
           <LoginIcon fontSize='medium' />
           <Typography>Logout</Typography>
         </MenuItem>
-        <Divider variant='middle' />
+        <Divider variant='middle' style={{ borderColor: theme.palette.primary.main }} />
         <LightDarkMenuItem className='flex flex-row justify-start gap-[1em] pointer-events-none' />
       </Menu>
     )
@@ -60,7 +61,7 @@ export default function DropdownMenu({
           <LoginIcon fontSize='medium' />
           <Typography>Login</Typography>
         </MenuItem>
-        <Divider variant='middle' />
+        <Divider variant='middle' style={{ borderColor: theme.palette.primary.main }} />
         <LightDarkMenuItem className='flex flex-row justify-start gap-[1em] pointer-events-none' />
       </Menu>
     )
@@ -72,8 +73,8 @@ function LightDarkMenuItem({ className }: { className: string }) {
   const value = colorScheme === 'light' ? 'on' : 'off'
 
   return (
-    <MenuItem className={className} disableRipple disableTouchRipple>
-      {colorScheme === 'light' ? <DarkMode fontSize='medium' /> : <LightMode fontSize='medium' />}
+    <MenuItem className={clsx(className, '!bg-transparent')} disableRipple disableTouchRipple>
+      {colorScheme === 'light' ? <LightMode fontSize='medium' /> : <DarkMode fontSize='medium' />}
       <Switch
         className='pointer-events-auto'
         onChange={() => dispatch(toggleColorScheme())}
