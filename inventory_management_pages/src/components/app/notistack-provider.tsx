@@ -1,6 +1,6 @@
 import { styled, useTheme } from '@mui/material'
 import { MaterialDesignContent, SnackbarKey, SnackbarProvider, useSnackbar } from 'notistack'
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 type NotistackProviderType = {
   children: ReactNode
@@ -11,16 +11,25 @@ export default function NotistackProvider({ children }: NotistackProviderType) {
 
   // customize colors to follow material ui theme
   // https://notistack.com/features/customization#override-styles
-  const StyledMaterialDesignContent = styled(MaterialDesignContent)(() => ({
-    '&.notistack-MuiContent-success': {
-      backgroundColor: theme.palette.primary.light,
-      color: theme.palette.primary.contrastText,
-    },
-    '&.notistack-MuiContent-error': {
-      backgroundColor: theme.palette.error.main,
-      color: theme.palette.error.contrastText,
-    },
-  }))
+  const StyledMaterialDesignContent = useMemo(
+    () =>
+      styled(MaterialDesignContent)(() => ({
+        '&.notistack-MuiContent-success': {
+          backgroundColor: theme.palette.primary.light,
+          color: theme.palette.primary.contrastText,
+        },
+        '&.notistack-MuiContent-error': {
+          backgroundColor: theme.palette.error.main,
+          color: theme.palette.error.contrastText,
+        },
+      })),
+    [
+      theme.palette.primary.light,
+      theme.palette.primary.contrastText,
+      theme.palette.error.main,
+      theme.palette.error.contrastText,
+    ],
+  )
 
   return (
     <SnackbarProvider
