@@ -1,12 +1,11 @@
 import type { AppProps } from 'next/app'
-import Head from 'next/head'
 import { StrictMode, useEffect } from 'react'
 
 import Provider from '@/components/app/provider'
-import Header from '@/components/header/header'
 import { loginAction } from '@/store/slice/user'
 import store from '@/store/store'
 import '@/styles/globals.css'
+import Layout from '@/components/app/layout'
 
 export default function App({ Component, pageProps }: AppProps) {
   const { user, ...restProps } = pageProps
@@ -19,11 +18,9 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <StrictMode>
       <Provider>
-        <Head>
-          <meta name='viewport' content='initial-scale=1, width=device-width' />
-        </Head>
-        <Header />
-        <Component {...restProps} />
+        <Layout>
+          <Component {...restProps} />
+        </Layout>
       </Provider>
     </StrictMode>
   )

@@ -34,11 +34,16 @@ const commonThemeOptions = {
 const lightModeTheme = createTheme({
   // https://mui.com/material-ui/guides/typescript/#customization-of-theme
   palette: {
-    primary: { main: '#A7CECB' },
+    // primary: { main: '#A7CECB' },
+    primary: { main: '#5BC0BE' },
     secondary: { main: '#75704E' },
-    tertiary: { main: '#FFEDE1' },
-    // primary: { main: '#435058' },
-    // background: { main: '#FFEDE1' },
+    background: {
+      paper: '#FFEDE1',
+      default: '#FFEDE1',
+    },
+    text: {
+      primary: 'rgba(0, 0, 0, 0.87)',
+    },
     error: { main: '#B7245C' },
   },
   ...commonThemeOptions,
@@ -47,11 +52,15 @@ const lightModeTheme = createTheme({
 const darkModeTheme = createTheme({
   // https://mui.com/material-ui/guides/typescript/#customization-of-theme
   palette: {
-    primary: { main: '#435058' },
+    primary: { main: '#232A2F' },
     secondary: { main: '#A7CECB' },
-    // secondary: { main: '#75704E' },
-    // secondary: { main: '#FFEDE1' },
-    // background: { main: '#FFEDE1' },
+    background: {
+      paper: '#435058',
+      default: '#435058',
+    },
+    text: {
+      primary: '#fff',
+    },
     error: { main: '#B7245C' },
   },
   ...commonThemeOptions,
