@@ -18,7 +18,7 @@ const commonThemeOptions = {
   },
   // https://stackoverflow.com/questions/72077974/what-is-the-purpose-of-the-fontsize-theme-setting-when-all-typography-variants-a
   typography: {
-    fontSize: 12,
+    fontSize: 14,
   },
   components: {
     MuiTypography: {
