@@ -1,3 +1,4 @@
+import { useTheme } from '@mui/material'
 import TextField from '@mui/material/TextField'
 import React, { ComponentProps } from 'react'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
@@ -15,6 +16,7 @@ export default function Input<T extends FieldValues>(props: InputProps<T>) {
     formState: { errors },
   } = useController({ name, control })
   const errorMessage = String(errors?.[name]?.message ?? '')
+  const theme = useTheme()
 
   // use a special converter when type === 'number'
   const convertStringToNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,6 +27,16 @@ export default function Input<T extends FieldValues>(props: InputProps<T>) {
   return (
     <TextField
       variant='outlined'
+      inputProps={{ style: { borderColor: theme.palette.text.primary } }}
+      InputLabelProps={{ style: { color: theme.palette.text.primary } }}
+      sx={{
+        '& .MuiInputBase-root::before': {
+          borderColor: theme.palette.text.primary,
+        },
+        '& fieldset': {
+          borderColor: theme.palette.text.primary,
+        },
+      }}
       onChange={changeHandler}
       type={type}
       {...restProps}
