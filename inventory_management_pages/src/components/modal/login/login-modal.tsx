@@ -3,7 +3,7 @@ import { Box, Button, Typography } from '@mui/material'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 
-import Input from '@/components/form/input/input'
+import Input from '@/components/form/input'
 import InlineButton from '@/components/inline-button/inline-button'
 import CommonModal from '@/components/modal/common/common-modal'
 import { useAuth } from '@/hooks/auth'

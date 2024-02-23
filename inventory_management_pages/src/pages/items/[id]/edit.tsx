@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import { useForm } from 'react-hook-form'
 
-import Input from '@/components/form/input/input'
+import Input from '@/components/form/input'
 import withAuth from '@/components/hoc/with-auth/withAuth'
 import { getItem } from '@/handlers/item'
 import { InventoryAppBaseError, InventoryAppClientError } from '@/helper/errors'
