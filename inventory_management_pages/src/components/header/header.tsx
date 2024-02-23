@@ -1,5 +1,6 @@
 import MenuIcon from '@mui/icons-material/Menu'
 import { AppBar, IconButton, Toolbar, Typography, useTheme } from '@mui/material'
+import clsx from 'clsx'
 import { MouseEvent, useState } from 'react'
 
 import DropdownMenu from '@/components/header/dropdown-menu'
@@ -7,7 +8,11 @@ import LoginModal from '@/components/modal/login/login-modal'
 import SignupModal from '@/components/modal/signup/signup-modal'
 import { useAuth } from '@/hooks/auth'
 
-export default function Header() {
+type HeaderType = {
+  className?: string
+}
+
+export default function Header({ className }: HeaderType) {
   const [isLoginOpen, setLoginOpen] = useState(false)
   const [isSignupOpen, setSignupOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
@@ -32,30 +37,27 @@ export default function Header() {
   }
 
   return (
-    <>
-      <AppBar position='static'>
-        <Toolbar
-          className='flex flex-row justify-between'
-          style={{ paddingInline: theme.spacing(6), paddingBlock: theme.spacing(2) }}
-        >
-          <Typography variant='h3'>Header</Typography>
+    <AppBar position='static' className={clsx(className)}>
+      <Toolbar
+        className='flex flex-row justify-between'
+        style={{ paddingInline: theme.spacing(6), paddingBlock: theme.spacing(2) }}
+      >
+        <Typography variant='h3'>Header</Typography>
 
-          <IconButton aria-label='hamburger-menu' size='medium' onClick={openMenu}>
-            <MenuIcon fontSize='inherit' htmlColor={theme.palette.primary.contrastText} />
-          </IconButton>
+        <IconButton aria-label='hamburger-menu' size='medium' onClick={openMenu}>
+          <MenuIcon fontSize='inherit' htmlColor={theme.palette.primary.contrastText} />
+        </IconButton>
 
-          <DropdownMenu
-            anchorElement={anchorEl}
-            isOpen={!!anchorEl}
-            onClose={closeMenu}
-            onLogin={login}
-            onLogout={logoutFromBackend}
-          />
-        </Toolbar>
-      </AppBar>
-
+        <DropdownMenu
+          anchorElement={anchorEl}
+          isOpen={!!anchorEl}
+          onClose={closeMenu}
+          onLogin={login}
+          onLogout={logoutFromBackend}
+        />
+      </Toolbar>
       <LoginModal isOpen={isLoginOpen} close={() => setLoginOpen(false)} openSignup={signup} />
       <SignupModal isOpen={isSignupOpen} close={() => setSignupOpen(false)} openLogin={login} />
-    </>
+    </AppBar>
   )
 }
