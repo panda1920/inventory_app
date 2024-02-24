@@ -42,7 +42,7 @@ export default function DropdownMenu({
           </Box>
           <Box className='flex flex-row gap-[1em] items-center self-stretch'>
             <PersonIcon fontSize='medium' />
-            <Typography variant='h6'>{username}</Typography>
+            <Typography variant='body2'>{username}</Typography>
           </Box>
         </MenuItem>
         <Divider variant='middle' style={{ borderColor: theme.palette.primary.main }} />
