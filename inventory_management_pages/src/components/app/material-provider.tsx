@@ -17,8 +17,12 @@ const commonThemeOptions = {
     },
   },
   // https://stackoverflow.com/questions/72077974/what-is-the-purpose-of-the-fontsize-theme-setting-when-all-typography-variants-a
+  // https://mui.com/material-ui/customization/typography/#font-size
   typography: {
     fontSize: 14,
+    button: {
+      textTransform: 'none',
+    },
   },
   // https://mui.com/material-ui/customization/theme-components/
   components: {

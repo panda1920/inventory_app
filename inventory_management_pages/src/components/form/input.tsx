@@ -26,7 +26,6 @@ export default function Input<T extends FieldValues>(props: InputProps<T>) {
 
   return (
     <TextField
-      variant='outlined'
       inputProps={{ style: { borderColor: theme.palette.text.primary } }}
       InputLabelProps={{ style: { color: theme.palette.text.primary } }}
       sx={{
@@ -43,7 +42,8 @@ export default function Input<T extends FieldValues>(props: InputProps<T>) {
       {...restRhfField}
       inputRef={ref}
       error={invalid}
-      helperText={errorMessage}
+      // single space string to occupy height, prevent contents shifting downwards
+      helperText={errorMessage || ' '}
     />
   )
 }
