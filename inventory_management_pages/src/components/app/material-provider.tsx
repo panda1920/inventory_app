@@ -1,4 +1,4 @@
-import { ThemeProvider, createTheme } from '@mui/material'
+import { ThemeOptions, ThemeProvider, createTheme } from '@mui/material'
 import { ReactNode } from 'react'
 
 import { useAppSelector } from '@/store/hooks'
@@ -20,15 +20,19 @@ const commonThemeOptions = {
   typography: {
     fontSize: 14,
   },
+  // https://mui.com/material-ui/customization/theme-components/
   components: {
     MuiTypography: {
-      variants: [
-        // { props: { variant: 'body1' }, style: { fontSize: 11, backgroundColor: 'blue' } },
-        // { props: { variant: 'body2' }, style: { fontSize: 32 } },
-      ],
+      styleOverrides: {
+        body2: {
+          fontSize: '1.2em',
+        },
+      },
+      // the below syntax seems to define a new variant
+      variants: [{ props: { variant: 'body3' }, style: { fontSize: '1.4em' } }],
     },
   },
-}
+} satisfies Partial<ThemeOptions>
 
 // https://mui.com/material-ui/customization/theming/
 const lightModeTheme = createTheme({
@@ -38,8 +42,10 @@ const lightModeTheme = createTheme({
     primary: { main: '#5BC0BE' },
     secondary: { main: '#75704E' },
     background: {
-      paper: '#FFEDE1',
-      default: '#FFEDE1',
+      // paper: '#FFEDE1',
+      // default: '#FFEDE1',
+      paper: '#FFF2EA',
+      default: '#FFF2EA',
     },
     text: {
       primary: 'rgba(0, 0, 0, 0.87)',

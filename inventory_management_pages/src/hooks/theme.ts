@@ -1,4 +1,4 @@
-import { getContrastRatio, useTheme } from '@mui/material'
+import { useTheme } from '@mui/material'
 import { CSSProperties } from 'react'
 
 /**

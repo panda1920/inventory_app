@@ -9,3 +9,10 @@ declare module '@mui/material/styles' {
     tertiary?: PaletteOptions['primary']
   }
 }
+
+// augment Typography component
+declare module '@mui/material/Typography' {
+  interface TypographyPropsVariantOverrides {
+    body3: true
+  }
+}
