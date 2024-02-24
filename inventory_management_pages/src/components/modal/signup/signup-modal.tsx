@@ -64,6 +64,7 @@ export default function SignupModal({ isOpen, close, openLogin }: SignupModalPro
             type='text'
             autoComplete='username'
             variant='standard'
+            required
             control={control}
           />
           <Input
@@ -72,6 +73,7 @@ export default function SignupModal({ isOpen, close, openLogin }: SignupModalPro
             type='email'
             autoComplete='email'
             variant='standard'
+            required
             control={control}
           />
           <Input
@@ -80,6 +82,7 @@ export default function SignupModal({ isOpen, close, openLogin }: SignupModalPro
             type='password'
             autoComplete='new-password'
             variant='standard'
+            required
             control={control}
           />
           <Input
@@ -88,6 +91,7 @@ export default function SignupModal({ isOpen, close, openLogin }: SignupModalPro
             type='password'
             autoComplete='new-password'
             variant='standard'
+            required
             control={control}
           />
           <Button

@@ -62,6 +62,7 @@ export default function LoginModal({ isOpen, close, openSignup }: LoginModalProp
             name='email'
             autoComplete='email'
             variant='standard'
+            required
             control={control}
           />
           <Input
@@ -70,6 +71,7 @@ export default function LoginModal({ isOpen, close, openSignup }: LoginModalProp
             name='password'
             autoComplete='current-password'
             variant='standard'
+            required
             control={control}
           />
           <Button

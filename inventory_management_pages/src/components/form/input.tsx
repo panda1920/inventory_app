@@ -26,7 +26,9 @@ export default function Input<T extends FieldValues>(props: InputProps<T>) {
 
   return (
     <TextField
-      inputProps={{ style: { borderColor: theme.palette.text.primary } }}
+      inputProps={{
+        style: { borderColor: theme.palette.text.primary, paddingInline: theme.spacing(0.5) },
+      }}
       InputLabelProps={{ style: { color: theme.palette.text.primary } }}
       sx={{
         '& .MuiInputBase-root::before': {

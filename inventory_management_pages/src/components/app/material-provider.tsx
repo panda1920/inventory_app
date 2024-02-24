@@ -54,7 +54,7 @@ const lightModeTheme = createTheme({
     text: {
       primary: 'rgba(0, 0, 0, 0.87)',
     },
-    error: { main: '#B7245C' },
+    error: { main: '#BB255F' },
   },
   ...commonThemeOptions,
 })
@@ -69,9 +69,9 @@ const darkModeTheme = createTheme({
       default: '#435058',
     },
     text: {
-      primary: '#fff',
+      primary: '#e8e8e8',
     },
-    error: { main: '#B7245C' },
+    error: { main: '#DA447D' },
   },
   ...commonThemeOptions,
 })
