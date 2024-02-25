@@ -9,7 +9,7 @@ type InputProps<T extends FieldValues> = ComponentProps<typeof TextField> & {
 }
 
 export default function Input<T extends FieldValues>(props: InputProps<T>) {
-  const { name, control, type, ...restProps } = props
+  const { name, control, type, variant, ...restProps } = props
   const {
     field: { ref, onChange, ...restRhfField },
     fieldState: { invalid },
@@ -27,7 +27,7 @@ export default function Input<T extends FieldValues>(props: InputProps<T>) {
   return (
     <TextField
       inputProps={{
-        className: '!ps-1',
+        className: variant === 'standard' ? '!ps-1' : undefined,
         style: { borderColor: theme.palette.text.primary },
       }}
       InputLabelProps={{ style: { color: theme.palette.text.primary } }}
@@ -41,6 +41,7 @@ export default function Input<T extends FieldValues>(props: InputProps<T>) {
       }}
       onChange={changeHandler}
       type={type}
+      variant={variant}
       {...restProps}
       {...restRhfField}
       inputRef={ref}
