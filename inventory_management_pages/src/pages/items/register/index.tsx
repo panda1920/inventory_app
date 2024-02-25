@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Box, Button, Typography, useTheme } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import { useForm } from 'react-hook-form'
@@ -11,7 +11,6 @@ import { withServerSideHooks } from '@/helper/serverside-hooks'
 import { RegisterItemSchema, registerItemSchema } from '@/types/form/item'
 
 function RegisterItem() {
-  const theme = useTheme()
   const router = useRouter()
   const { enqueueSnackbar } = useSnackbar()
   const { reset, control, formState, handleSubmit } = useForm<RegisterItemSchema>({
@@ -37,19 +36,12 @@ function RegisterItem() {
   const navigateBack = () => router.push('/items')
 
   return (
-    <section
-      className={`ms-[auto] me-[auto] flex flex-col`}
-      style={{ width: `min(1000px, 100% - ${theme.spacing(8)})`, gap: theme.spacing(4) }}
-    >
-      <Typography variant='h3' className='text-center' style={{ marginBlock: theme.spacing(2) }}>
+    <section className={`ms-[auto] me-[auto] flex flex-col gap-8`}>
+      <Typography variant='h4' component='h1' className='text-center'>
         Register Item
       </Typography>
 
-      <form
-        onSubmit={onSubmit}
-        className='flex flex-col items-stretch'
-        style={{ gap: theme.spacing(2) }}
-      >
+      <Box component='form' onSubmit={onSubmit} className='flex flex-col items-stretch gap-4'>
         <Input label='name' name='name' type='text' color='primary' control={control} />
         <Input label='quantity' name='quantity' type='number' control={control} />
         <Input
@@ -61,7 +53,7 @@ function RegisterItem() {
           maxRows={5}
           control={control}
         />
-        <Box className='flex flex-row content-start' style={{ gap: theme.spacing(2) }}>
+        <Box className='flex flex-row content-start gap-4'>
           <Button
             type='submit'
             color='primary'
@@ -83,7 +75,7 @@ function RegisterItem() {
             Cancel
           </Button>
         </Box>
-      </form>
+      </Box>
     </section>
   )
 }

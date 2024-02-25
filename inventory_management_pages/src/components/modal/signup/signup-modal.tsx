@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Box, Button, Typography, useTheme } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import Image from 'next/image'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -37,7 +37,6 @@ export default function SignupModal({ isOpen, close, openLogin }: SignupModalPro
       confirm: '',
     },
   })
-  const theme = useTheme()
   const colorScheme = useAppSelector(getColorScheme)
 
   // reset form state when modal opens
@@ -51,12 +50,11 @@ export default function SignupModal({ isOpen, close, openLogin }: SignupModalPro
 
   return (
     <CommonModal isOpen={isOpen} close={close} title='Signup'>
-      <Box className='flex flex-col' sx={{ gap: { xs: theme.spacing(3), sm: theme.spacing(4) } }}>
+      <Box className='flex flex-col sm:gap-8 gap-6'>
         <Box
           component='form'
           onSubmit={handleSubmit(signupHandler)}
-          className='flex flex-col'
-          style={{ gap: theme.spacing(0.5) }}
+          className='flex flex-col gap-1'
         >
           <Input
             label='Username'
@@ -98,17 +96,16 @@ export default function SignupModal({ isOpen, close, openLogin }: SignupModalPro
             type='submit'
             color='primary'
             variant='contained'
-            className='self-start'
-            style={{ marginBlock: theme.spacing(1) }}
+            className='self-start !my-2'
             disabled={isSubmitting}
           >
             SIGNUP
           </Button>
         </Box>
 
-        <Box className='flex flex-col' style={{ gap: theme.spacing(2) }}>
+        <Box className='flex flex-col gap-4'>
           <Typography>Signup with the following providers:</Typography>
-          <Box className='flex flex-row items-baseline' style={{ gap: theme.spacing(2) }}>
+          <Box className='flex flex-row items-baseline gap-4'>
             <Button
               onClick={loginWithGoogleHandler}
               disableElevation={true}
@@ -117,9 +114,9 @@ export default function SignupModal({ isOpen, close, openLogin }: SignupModalPro
               <Image
                 src='/assets/google.svg'
                 alt='Google'
-                width='36'
-                height='36'
-                className='w-[36px] h-auto'
+                width='32'
+                height='32'
+                className='aspect-[auto_1/1]'
               />
             </Button>
             <Button
@@ -134,9 +131,9 @@ export default function SignupModal({ isOpen, close, openLogin }: SignupModalPro
                     : '/assets/github-mark-white.svg'
                 }
                 alt='Github'
-                width='36'
-                height='36'
-                className='w-[36px] h-auto'
+                width='32'
+                height='32'
+                className='aspect-[auto_1/1]'
               />
             </Button>
           </Box>

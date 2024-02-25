@@ -1,5 +1,8 @@
 import MenuIcon from '@mui/icons-material/Menu'
-import { AppBar, IconButton, Toolbar, Typography, useTheme } from '@mui/material'
+import { IconButton, useTheme } from '@mui/material'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
 import clsx from 'clsx'
 import { MouseEvent, useState } from 'react'
 
@@ -38,10 +41,7 @@ export default function Header({ className }: HeaderType) {
 
   return (
     <AppBar position='static' className={clsx(className)}>
-      <Toolbar
-        className='flex flex-row justify-between'
-        style={{ paddingInline: theme.spacing(6), paddingBlock: theme.spacing(2) }}
-      >
+      <Toolbar className='flex flex-row justify-between px-12 py-4'>
         <Typography variant='h3'>Header</Typography>
 
         <IconButton aria-label='hamburger-menu' size='medium' onClick={openMenu}>

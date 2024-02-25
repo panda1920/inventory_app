@@ -36,7 +36,7 @@ export default function DropdownMenu({
   if (isLoggedIn)
     return (
       <Menu anchorEl={anchorElement} open={isOpen} onClose={onClose}>
-        <MenuItem className='pointer-events-none flex flex-col' style={{ gap: theme.spacing(1) }}>
+        <MenuItem className='pointer-events-none flex flex-col gap-2'>
           <Box>
             <Typography>You are logged in as</Typography>
           </Box>

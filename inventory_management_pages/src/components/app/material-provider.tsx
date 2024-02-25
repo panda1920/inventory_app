@@ -16,6 +16,10 @@ const commonThemeOptions = {
       xl: 1280,
     },
   },
+  // also make spacing align with tailwind values
+  // https://mui.com/material-ui/customization/spacing/
+  // https://tailwindcss.com/docs/customizing-spacing#default-spacing-scale
+  spacing: 4,
   // https://stackoverflow.com/questions/72077974/what-is-the-purpose-of-the-fontsize-theme-setting-when-all-typography-variants-a
   // https://mui.com/material-ui/customization/typography/#font-size
   typography: {

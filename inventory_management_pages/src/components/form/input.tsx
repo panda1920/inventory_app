@@ -27,7 +27,8 @@ export default function Input<T extends FieldValues>(props: InputProps<T>) {
   return (
     <TextField
       inputProps={{
-        style: { borderColor: theme.palette.text.primary, paddingInline: theme.spacing(0.5) },
+        className: '!ps-1',
+        style: { borderColor: theme.palette.text.primary },
       }}
       InputLabelProps={{ style: { color: theme.palette.text.primary } }}
       sx={{

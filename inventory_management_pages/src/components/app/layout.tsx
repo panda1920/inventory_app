@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, useTheme } from '@mui/material'
 import Head from 'next/head'
 import { ReactNode } from 'react'
 
@@ -10,6 +10,7 @@ type LayoutProps = {
 }
 
 export default function Layout({ children }: LayoutProps) {
+  const theme = useTheme()
   const backgroundColorStyle = useBackgroundColorStyle()
 
   return (
@@ -18,7 +19,16 @@ export default function Layout({ children }: LayoutProps) {
         <meta name='viewport' content='initial-scale=1, width=device-width' />
       </Head>
       <Header />
-      <main style={backgroundColorStyle}>{children}</main>
+      <Box component='main' style={{ ...backgroundColorStyle }}>
+        <Box
+          className='ms-[auto] me-[auto] py-8'
+          style={{
+            width: `min(1000px, 100% - ${theme.spacing(8)})`,
+          }}
+        >
+          {children}
+        </Box>
+      </Box>
     </Box>
   )
 }

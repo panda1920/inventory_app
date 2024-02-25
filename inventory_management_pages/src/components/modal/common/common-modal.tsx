@@ -1,4 +1,4 @@
-import { Box, Dialog, DialogTitle, styled, useTheme } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle } from '@mui/material'
 import clsx from 'clsx'
 import { CSSProperties, ReactNode } from 'react'
 
@@ -19,15 +19,13 @@ export default function CommonModal({
   paperStyle,
   children,
 }: CommonModalProps) {
-  const theme = useTheme()
-
   return (
     <Dialog
       open={isOpen}
       onClose={close}
       PaperProps={{
-        className: clsx('sm:min-w-[600px]', paperClass),
-        style: { paddingBlock: theme.spacing(2), ...paperStyle },
+        className: clsx('sm:min-w-[600px] py-4', paperClass),
+        style: paperStyle,
       }}
     >
       <DialogTitle variant='h5'>{title}</DialogTitle>
@@ -35,8 +33,3 @@ export default function CommonModal({
     </Dialog>
   )
 }
-
-const DialogContent = styled(Box)(({ theme }) => ({
-  paddingBlock: theme.spacing(2),
-  paddingInline: theme.spacing(3),
-}))
