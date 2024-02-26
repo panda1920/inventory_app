@@ -1,14 +1,22 @@
 import { Box, Button } from '@mui/material'
 import { Inter } from 'next/font/google'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 import { withServerSideHooks } from '@/helper/serverside-hooks'
+import { useAppSelector } from '@/store/hooks'
+import { checkLogin } from '@/store/slice/user'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   const router = useRouter()
+  const isLoggedIn = useAppSelector(checkLogin)
+
+  // if loggedin send user to items page
+  useEffect(() => {
+    if (isLoggedIn) router.replace('/items')
+  }, [isLoggedIn, router])
 
   return (
     <Box className={`items-center justify-between p-24 ${inter.className}`}>
@@ -132,4 +140,18 @@ export default function Home() {
   )
 }
 
-export const getServerSideProps = withServerSideHooks()
+export const getServerSideProps = withServerSideHooks(async (context) => {
+  // if loggedin send user to items page
+  if (context.user) {
+    return {
+      redirect: {
+        destination: '/items',
+        permanent: false,
+      },
+    }
+  }
+
+  return {
+    props: {},
+  }
+})
