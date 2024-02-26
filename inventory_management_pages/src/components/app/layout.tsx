@@ -1,8 +1,9 @@
-import { Box, useTheme } from '@mui/material'
+import { Box } from '@mui/material'
 import Head from 'next/head'
 import { ReactNode } from 'react'
 
 import Header from '@/components/header/header'
+import { setContentWidth } from '@/helper/tailwind'
 import { useBackgroundColorStyle } from '@/hooks/theme'
 
 type LayoutProps = {
@@ -10,7 +11,6 @@ type LayoutProps = {
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const theme = useTheme()
   const backgroundColorStyle = useBackgroundColorStyle()
 
   return (
@@ -18,16 +18,9 @@ export default function Layout({ children }: LayoutProps) {
       <Head>
         <meta name='viewport' content='initial-scale=1, width=device-width' />
       </Head>
-      <Header />
+      <Header contentClassName={setContentWidth} />
       <Box component='main' style={{ ...backgroundColorStyle }}>
-        <Box
-          className='ms-[auto] me-[auto] py-8'
-          style={{
-            width: `min(1000px, 100% - ${theme.spacing(8)})`,
-          }}
-        >
-          {children}
-        </Box>
+        <Box className={'py-8 ' + setContentWidth}>{children}</Box>
       </Box>
     </Box>
   )

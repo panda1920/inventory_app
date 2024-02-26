@@ -13,9 +13,10 @@ import { useAuth } from '@/hooks/auth'
 
 type HeaderType = {
   className?: string
+  contentClassName?: string
 }
 
-export default function Header({ className }: HeaderType) {
+export default function Header({ className, contentClassName }: HeaderType) {
   const [isLoginOpen, setLoginOpen] = useState(false)
   const [isSignupOpen, setSignupOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
@@ -40,8 +41,8 @@ export default function Header({ className }: HeaderType) {
   }
 
   return (
-    <AppBar position='static' className={clsx(className)}>
-      <Toolbar className='flex flex-row justify-between px-12 py-4'>
+    <AppBar position='static' className={className}>
+      <Toolbar className={clsx('flex flex-row justify-between py-4 !px-0', contentClassName)}>
         <Typography variant='h3'>Header</Typography>
 
         <IconButton aria-label='hamburger-menu' size='medium' onClick={openMenu}>
