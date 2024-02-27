@@ -36,9 +36,9 @@ function RegisterItem() {
   const navigateBack = () => router.push('/items')
 
   return (
-    <section className={`ms-[auto] me-[auto] flex flex-col gap-8`}>
-      <Typography variant='h4' component='h1' className='text-center'>
-        Register Item
+    <Box component='section' className={`flex flex-col gap-8`}>
+      <Typography variant='h4' component='h1'>
+        Add Item
       </Typography>
 
       <Box component='form' onSubmit={onSubmit} className='flex flex-col items-stretch gap-4'>
@@ -62,7 +62,7 @@ function RegisterItem() {
             disabled={formState.isSubmitting}
             variant='contained'
           >
-            Add
+            ADD
           </Button>
           <Button
             type='button'
@@ -72,11 +72,11 @@ function RegisterItem() {
             variant='text'
             onClick={navigateBack}
           >
-            Cancel
+            CANCEL
           </Button>
         </Box>
       </Box>
-    </section>
+    </Box>
   )
 }
 

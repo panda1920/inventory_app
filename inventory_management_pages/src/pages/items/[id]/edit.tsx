@@ -43,8 +43,8 @@ function EditItem({ item }: EditItemProps) {
   const navigateBack = () => router.push('/items')
 
   return (
-    <section className={`ms-[auto] me-[auto] flex flex-col gap-8`}>
-      <Typography variant='h4' component='h1' className='text-center'>
+    <Box component='section' className={`flex flex-col gap-8`}>
+      <Typography variant='h4' component='h1'>
         Edit Item
       </Typography>
 
@@ -69,7 +69,7 @@ function EditItem({ item }: EditItemProps) {
             disabled={formState.isSubmitting}
             variant='contained'
           >
-            Update
+            UPDATE
           </Button>
           <Button
             type='button'
@@ -79,11 +79,11 @@ function EditItem({ item }: EditItemProps) {
             variant='text'
             onClick={navigateBack}
           >
-            Cancel
+            CANCEL
           </Button>
         </Box>
       </Box>
-    </section>
+    </Box>
   )
 }
 
