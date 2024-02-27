@@ -6,19 +6,19 @@ import { useForm } from 'react-hook-form'
 
 import Input from '@/components/form/input'
 import InlineButton from '@/components/inline-button/inline-button'
-import CommonModal from '@/components/modal/common/common-modal'
+import CommonModal from '@/components/modal/common-modal'
 import { useAuth } from '@/hooks/auth'
-import { useAppSelector } from '@/store/hooks'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { getColorScheme } from '@/store/slice/app'
+import { setLoginModal, setSignupModal } from '@/store/slice/modal'
 import { LoginSchema, loginSchema } from '@/types/form/login'
 
 type LoginModalProps = {
   isOpen: boolean
   close: () => void
-  openSignup: () => void
 }
 
-export default function LoginModal({ isOpen, close, openSignup }: LoginModalProps) {
+export default function LoginModal({ isOpen, close }: LoginModalProps) {
   const { login, loginWithGoogleHandler, loginWithGithubHandler } = useAuth({
     afterLoginAction: close,
   })
@@ -36,6 +36,7 @@ export default function LoginModal({ isOpen, close, openSignup }: LoginModalProp
     },
   })
   const colorScheme = useAppSelector(getColorScheme)
+  const dispatch = useAppDispatch()
 
   // reset form state when modal opens
   useEffect(() => {
@@ -117,8 +118,16 @@ export default function LoginModal({ isOpen, close, openSignup }: LoginModalProp
 
         <Box>
           <Typography>
-            Don&apos;t have an account? <InlineButton onClick={openSignup}>Signup</InlineButton> to
-            the app!
+            Don&apos;t have an account?{' '}
+            <InlineButton
+              onClick={() => {
+                dispatch(setLoginModal(() => false))
+                dispatch(setSignupModal(() => true))
+              }}
+            >
+              Signup
+            </InlineButton>{' '}
+            to the app!
           </Typography>
         </Box>
       </Box>

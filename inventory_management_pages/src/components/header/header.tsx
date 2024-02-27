@@ -2,17 +2,15 @@ import MenuIcon from '@mui/icons-material/Menu'
 import { IconButton, useTheme } from '@mui/material'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
 import clsx from 'clsx'
 import Image from 'next/image'
 import { MouseEvent, useState } from 'react'
 
 import DropdownMenu from '@/components/header/dropdown-menu'
-import LoginModal from '@/components/modal/login/login-modal'
-import SignupModal from '@/components/modal/signup/signup-modal'
 import { useAuth } from '@/hooks/auth'
-import { useAppSelector } from '@/store/hooks'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { getColorScheme } from '@/store/slice/app'
+import { setLoginModal, setSignupModal } from '@/store/slice/modal'
 
 type HeaderType = {
   className?: string
@@ -20,12 +18,11 @@ type HeaderType = {
 }
 
 export default function Header({ className, contentClassName }: HeaderType) {
-  const [isLoginOpen, setLoginOpen] = useState(false)
-  const [isSignupOpen, setSignupOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const { logoutFromBackend } = useAuth({ afterLogoutAction: closeMenu })
   const theme = useTheme()
   const colorScheme = useAppSelector(getColorScheme)
+  const dispatch = useAppDispatch()
 
   function openMenu(event: MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget)
@@ -34,13 +31,8 @@ export default function Header({ className, contentClassName }: HeaderType) {
     setAnchorEl(null)
   }
   async function login() {
-    setLoginOpen(true)
-    setSignupOpen(false)
-    closeMenu()
-  }
-  async function signup() {
-    setSignupOpen(true)
-    setLoginOpen(false)
+    dispatch(setLoginModal(() => true))
+    dispatch(setSignupModal(() => false))
     closeMenu()
   }
 
@@ -66,8 +58,6 @@ export default function Header({ className, contentClassName }: HeaderType) {
           onLogout={logoutFromBackend}
         />
       </Toolbar>
-      <LoginModal isOpen={isLoginOpen} close={() => setLoginOpen(false)} openSignup={signup} />
-      <SignupModal isOpen={isSignupOpen} close={() => setSignupOpen(false)} openLogin={login} />
     </AppBar>
   )
 }

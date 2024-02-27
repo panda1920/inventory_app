@@ -13,6 +13,7 @@ import storage from 'redux-persist/lib/storage'
 
 import appSlice from '@/store/slice/app'
 import counterSlice from '@/store/slice/counter'
+import modalSlice from '@/store/slice/modal'
 import userSlice from '@/store/slice/user'
 
 // https://github.com/rt2zz/redux-persist/blob/master/docs/api.md#type-persistconfig
@@ -20,7 +21,7 @@ const persistConfig = {
   key: 'root-store',
   storage,
   debug: process.env.NODE_ENV !== 'production',
-  blacklist: ['user'],
+  blacklist: ['user', 'modal'],
 }
 
 const persistedReducer = persistReducer(
@@ -29,6 +30,7 @@ const persistedReducer = persistReducer(
     user: userSlice.reducer,
     counter: counterSlice.reducer,
     app: appSlice.reducer,
+    modal: modalSlice.reducer,
   }),
 )
 
@@ -39,7 +41,16 @@ const store = configureStore({
     return getDefaultMiddleware({
       // https://redux-toolkit.js.org/usage/usage-guide#working-with-non-serializable-data
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        ignoredActions: [
+          FLUSH,
+          REHYDRATE,
+          PAUSE,
+          PERSIST,
+          PURGE,
+          REGISTER,
+          'modal/setLoginModal',
+          'modal/setSignupModal',
+        ],
       },
     })
   },
