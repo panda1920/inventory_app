@@ -2,7 +2,7 @@ import DarkMode from '@mui/icons-material/DarkMode'
 import LightMode from '@mui/icons-material/LightMode'
 import LoginIcon from '@mui/icons-material/Login'
 import PersonIcon from '@mui/icons-material/Person'
-import { Switch, useTheme } from '@mui/material'
+import { Switch } from '@mui/material'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import Menu from '@mui/material/Menu'
@@ -31,26 +31,24 @@ export default function DropdownMenu({
 }: DropdownMenuProps) {
   const isLoggedIn = useAppSelector(checkLogin)
   const username = useAppSelector(getUsername)
-  const theme = useTheme()
 
   if (isLoggedIn)
     return (
       <Menu anchorEl={anchorElement} open={isOpen} onClose={onClose}>
-        <MenuItem className='pointer-events-none flex flex-col gap-2'>
+        <MenuItem className='pointer-events-none flex flex-col gap-1 !mb-1'>
           <Box>
             <Typography>You are logged in as</Typography>
           </Box>
           <Box className='flex flex-row gap-[1em] items-center self-stretch'>
             <PersonIcon fontSize='medium' />
-            <Typography variant='body2'>{username}</Typography>
+            <Typography>{username}</Typography>
           </Box>
         </MenuItem>
-        <Divider variant='middle' style={{ borderColor: theme.palette.primary.main }} />
         <MenuItem onClick={onLogout} className='flex flex-row justify-start gap-[1em]'>
           <LoginIcon fontSize='medium' />
           <Typography>Logout</Typography>
         </MenuItem>
-        <Divider variant='middle' style={{ borderColor: theme.palette.primary.main }} />
+        <Divider variant='middle' />
         <LightDarkMenuItem className='flex flex-row justify-start gap-[1em] pointer-events-none' />
       </Menu>
     )
@@ -61,7 +59,7 @@ export default function DropdownMenu({
           <LoginIcon fontSize='medium' />
           <Typography>Login</Typography>
         </MenuItem>
-        <Divider variant='middle' style={{ borderColor: theme.palette.primary.main }} />
+        <Divider variant='middle' />
         <LightDarkMenuItem className='flex flex-row justify-start gap-[1em] pointer-events-none' />
       </Menu>
     )
@@ -70,7 +68,7 @@ export default function DropdownMenu({
 function LightDarkMenuItem({ className }: { className: string }) {
   const colorScheme = useAppSelector(getColorScheme)
   const dispatch = useAppDispatch()
-  const value = colorScheme === 'light' ? 'on' : 'off'
+  const isLight = colorScheme === 'light'
 
   return (
     <MenuItem className={clsx(className, '!bg-transparent')} disableRipple disableTouchRipple>
@@ -78,7 +76,7 @@ function LightDarkMenuItem({ className }: { className: string }) {
       <Switch
         className='pointer-events-auto'
         onChange={() => dispatch(toggleColorScheme())}
-        value={value}
+        checked={isLight}
       />
     </MenuItem>
   )
