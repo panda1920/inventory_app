@@ -1,10 +1,17 @@
-import { Box, Button } from '@mui/material'
+import ArrowForward from '@mui/icons-material/ArrowForward'
+import { Divider, useTheme } from '@mui/material'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
 import { Inter } from 'next/font/google'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 import { withServerSideHooks } from '@/helper/serverside-hooks'
-import { useAppSelector } from '@/store/hooks'
+import { setContentWidth } from '@/helper/tailwind'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { setSignupModal } from '@/store/slice/modal'
 import { checkLogin } from '@/store/slice/user'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -12,6 +19,8 @@ const inter = Inter({ subsets: ['latin'] })
 export default function Home() {
   const router = useRouter()
   const isLoggedIn = useAppSelector(checkLogin)
+  const dispatch = useAppDispatch()
+  const theme = useTheme()
 
   // if loggedin send user to items page
   useEffect(() => {
@@ -19,123 +28,80 @@ export default function Home() {
   }, [isLoggedIn, router])
 
   return (
-    <Box className={`items-center justify-between p-24 ${inter.className}`}>
-      <div className='z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex'>
-        {/* <p className='fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30'>
-          Get started by editing&nbsp;
-          <code className='font-mono font-bold'>src/pages/index.tsx</code>
-        </p> */}
-        {/* <div className='fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none'>
-          <a
-            className='pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0'
-            href='https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            By{' '}
-            <Image
-              src='/vercel.svg'
-              alt='Vercel Logo'
-              className='dark:invert'
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div> */}
-      </div>
+    <Box className={`items-center justify-between ${inter.className}`}>
+      <Box
+        component='section'
+        className='sm:py-32 py-20'
+        style={{ backgroundColor: theme.palette.primary.main, color: theme.palette.text.primary }}
+      >
+        <Box className={'grid sm:grid-cols-2 sm:gap-16 gap-8 sm:items-center ' + setContentWidth}>
+          <Box className='sm:block'>
+            <Typography variant='h2' component='p' className='!my-[.5em] sm:text-left text-center'>
+              Manage Your Belongings
+            </Typography>
+            <Typography className='!my-[1em]'>
+              Keep track of all your consumables so that you&apos;ll never have too much or too
+              little stuff. No more accidental purchase of something you already have!
+            </Typography>
+            <Box className='flex flex-row sm:text-lg !my-[1em] sm:justify-start justify-center'>
+              <Button
+                variant='contained'
+                color='secondary'
+                className='!py-[1em] !px-[2em] sm:!text-lg !rounded-full gap-[.5em]'
+                onClick={() => dispatch(setSignupModal(() => true))}
+              >
+                SIGNUP
+                <ArrowForward />
+              </Button>
+            </Box>
+          </Box>
+          <Image src='/assets/hero.svg' width={1104} height={805} alt='hero image' />
+        </Box>
+      </Box>
 
-      {/* <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className='relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert'
-          src='/next.svg'
-          alt='Next.js Logo'
-          width={180}
-          height={37}
-          priority
-        />
-      </div> */}
+      <Box component='section' className='sm:py-32 py-20'>
+        <Box className={'sm:grid sm:grid-cols-2 sm:gap-16 flex flex-col gap-8 ' + setContentWidth}>
+          <Box className='bg-gray-300 aspect-[16/9] relative'>
+            <Typography className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
+              Placeholder
+            </Typography>
+          </Box>
+          <Box>
+            <Typography>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo blanditiis officiis
+              atque. Nisi aliquid labore dolore, incidunt ea fugiat voluptatibus inventore vel illum
+              asperiores, minima recusandae dolor repudiandae voluptatem debitis nesciunt nemo
+              maiores laborum sint ab mollitia possimus! Eos ut ullam recusandae dignissimos illum
+              molestias, temporibus numquam perspiciatis modi quae?
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
 
-      <div className='grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left'>
-        <a
-          href='https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app'
-          className='group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30'
-          target='_blank'
-          rel='noopener noreferrer'
+      <Divider className={'!m-auto ' + setContentWidth} variant='middle' />
+
+      <Box component='section' className='sm:py-32 py-20'>
+        <Box
+          className={
+            'sm:grid sm:grid-cols-2 sm:gap-16 flex flex-col-reverse gap-8 ' + setContentWidth
+          }
         >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className='inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none'>
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href='https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app'
-          className='group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className='inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none'>
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href='https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app'
-          className='group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className='inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none'>
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
-
-        <a
-          href='https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app'
-          className='group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className='inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none'>
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-
-        <Button variant='outlined'>Some Button</Button>
-        <Button variant='contained'>Some Button</Button>
-        <Button
-          variant='text'
-          onClick={() => {
-            router.push('/items')
-          }}
-        >
-          Go to items
-        </Button>
-      </div>
+          <Box>
+            <Typography>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo blanditiis officiis
+              atque. Nisi aliquid labore dolore, incidunt ea fugiat voluptatibus inventore vel illum
+              asperiores, minima recusandae dolor repudiandae voluptatem debitis nesciunt nemo
+              maiores laborum sint ab mollitia possimus! Eos ut ullam recusandae dignissimos illum
+              molestias, temporibus numquam perspiciatis modi quae?
+            </Typography>
+          </Box>
+          <Box className='bg-gray-300 aspect-[16/9] relative'>
+            <Typography className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
+              Placeholder2
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
     </Box>
   )
 }
