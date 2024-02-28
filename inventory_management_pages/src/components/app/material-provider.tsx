@@ -1,4 +1,4 @@
-import { ThemeOptions, ThemeProvider, createTheme } from '@mui/material'
+import { ThemeOptions, ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material'
 import { ReactNode } from 'react'
 
 import { useAppSelector } from '@/store/hooks'
@@ -43,42 +43,44 @@ const commonThemeOptions = {
 } satisfies Partial<ThemeOptions>
 
 // https://mui.com/material-ui/customization/theming/
-const lightModeTheme = createTheme({
-  // https://mui.com/material-ui/guides/typescript/#customization-of-theme
-  palette: {
-    // primary: { main: '#A7CECB' },
-    primary: { main: '#5BC0BE' },
-    secondary: { main: '#75704E' },
-    background: {
-      // paper: '#FFEDE1',
-      // default: '#FFEDE1',
-      paper: '#FFF2EA',
-      default: '#FFF2EA',
+const lightModeTheme = responsiveFontSizes(
+  createTheme({
+    // https://mui.com/material-ui/guides/typescript/#customization-of-theme
+    palette: {
+      // primary: { main: '#A7CECB' },
+      primary: { main: '#5BC0BE' },
+      secondary: { main: '#333F47' },
+      background: {
+        paper: '#FFF2EA',
+        default: '#FFF2EA',
+      },
+      text: {
+        primary: 'rgba(0, 0, 0, 0.87)',
+      },
+      error: { main: '#BB255F' },
     },
-    text: {
-      primary: 'rgba(0, 0, 0, 0.87)',
-    },
-    error: { main: '#BB255F' },
-  },
-  ...commonThemeOptions,
-})
+    ...commonThemeOptions,
+  }),
+)
 
-const darkModeTheme = createTheme({
-  // https://mui.com/material-ui/guides/typescript/#customization-of-theme
-  palette: {
-    primary: { main: '#232A2F' },
-    secondary: { main: '#A7CECB' },
-    background: {
-      paper: '#435058',
-      default: '#435058',
+const darkModeTheme = responsiveFontSizes(
+  createTheme({
+    // https://mui.com/material-ui/guides/typescript/#customization-of-theme
+    palette: {
+      primary: { main: '#232A2F' },
+      secondary: { main: '#A7CECB' },
+      background: {
+        paper: '#435058',
+        default: '#435058',
+      },
+      text: {
+        primary: '#e8e8e8',
+      },
+      error: { main: '#DA447D' },
     },
-    text: {
-      primary: '#e8e8e8',
-    },
-    error: { main: '#DA447D' },
-  },
-  ...commonThemeOptions,
-})
+    ...commonThemeOptions,
+  }),
+)
 
 type MaterialProviderProps = {
   children: ReactNode
