@@ -25,7 +25,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <Box className='grid grid-cols-1 grid-rows-[min-content_1fr] min-h-screen'>
       <Head>
-        <meta name='viewport' content='initial-scale=1, width=device-width' />
+        <title>Inventory App</title>
       </Head>
       <Header contentClassName={setContentWidth} />
 
