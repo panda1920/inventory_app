@@ -10,7 +10,7 @@ export default function Document() {
           rel='stylesheet'
           href='https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap'
         />
-        <link rel='icon' href='favicon.svg' />
+        <link rel='icon' href='/favicon.svg' />
         <meta name='robots' content='noindex, nofollow' />
         <meta name='viewport' content='initial-scale=1, width=device-width' />
       </Head>
