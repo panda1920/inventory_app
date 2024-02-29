@@ -28,6 +28,7 @@ jobs:
       REPOSITORY_NAME: ${{ secrets.AWS_ECR_REPOSITORY_NAME }}
       IMAGE_TAG: prod
       WORKING_DIRECTORY: inventory_management_pages
+      NEXT_PUBLIC_SITE_URL: ${{ secrets.SITE_URL }}
     defaults:
       run:
         working-directory: ${{ env.WORKING_DIRECTORY }}
