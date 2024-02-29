@@ -22,9 +22,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-      FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
-      FIREBASE_PRIVATE_KEY_BASE64: ${{ secrets.FIREBASE_PRIVATE_KEY_BASE64 }}
       REPOSITORY_NAME: ${{ secrets.AWS_ECR_REPOSITORY_NAME }}
       IMAGE_TAG: prod
       WORKING_DIRECTORY: inventory_management_pages
