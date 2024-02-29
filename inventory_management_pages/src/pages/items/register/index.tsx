@@ -8,7 +8,6 @@ import { useForm } from 'react-hook-form'
 import Input from '@/components/form/input'
 import withAuth from '@/components/hoc/with-auth/withAuth'
 import { InventoryAppClientError } from '@/helper/errors'
-import { withServerSideHooks } from '@/helper/serverside-hooks'
 import { RegisterItemSchema, registerItemSchema } from '@/types/form/item'
 
 function RegisterItem() {
@@ -83,7 +82,9 @@ function RegisterItem() {
 
 export default withAuth(RegisterItem)
 
-export const getServerSideProps: GetServerSideProps = (_context) => {
+export const getServerSideProps: GetServerSideProps = async (_context) => {
+  const { withServerSideHooks } = await import('@/helper/serverside-hooks')
+
   return withServerSideHooks(_context, async (context) => {
     // unauthenticated
     if (!context.user) {

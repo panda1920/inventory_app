@@ -9,7 +9,6 @@ import { useEffect } from 'react'
 
 import { InventoryAppClientError } from '@/helper/errors'
 import { getFirebaseAuth } from '@/helper/firebase'
-import { withServerSideHooks } from '@/helper/serverside-hooks'
 import { useAuth } from '@/hooks/auth'
 
 type FirebaseAuthEmailHandlerParams = {
@@ -90,6 +89,7 @@ function isValidFirebaseAuthEmailHandlerParams(
   return true
 }
 
-export const getServerSideProps: GetServerSideProps = (_context) => {
+export const getServerSideProps: GetServerSideProps = async (_context) => {
+  const { withServerSideHooks } = await import('@/helper/serverside-hooks')
   return withServerSideHooks(_context)
 }

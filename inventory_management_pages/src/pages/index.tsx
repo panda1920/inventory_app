@@ -9,7 +9,6 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
-import { withServerSideHooks } from '@/helper/serverside-hooks'
 import { setContentWidth } from '@/helper/tailwind'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { setSignupModal } from '@/store/slice/modal'
@@ -107,7 +106,9 @@ export default function Home() {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = (_context) => {
+export const getServerSideProps: GetServerSideProps = async (_context) => {
+  const { withServerSideHooks } = await import('@/helper/serverside-hooks')
+
   return withServerSideHooks(_context, async (context) => {
     // if loggedin send user to items page
     if (context.user) {
