@@ -1,6 +1,20 @@
 import { decryptEncryptedData, encryptData } from '@/helper/encrypt'
+import { auth } from '@/helper/firebase-admin'
 
 const isProduction = process.env.NODE_ENV === 'production'
+
+// https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#cookie_prefixes
+const cookiePrefix = isProduction ? '__Host-' : ''
+
+export const cookieNames = {
+  tokenCookie: cookiePrefix + 'INVENTORY_APP_TOKEN',
+  sessionCookie: cookiePrefix + 'INVENTORY_APP_SESSION',
+} as const
+
+export type CookieName = (typeof cookieNames)[keyof typeof cookieNames]
+
+const SESSION_EXPIRES_IN_MS = 1000 * 60 * 60 * 24 * 14 // 2 weeks
+const TOKEN_EXPIRES_IN_MS = 1000 * 60 * 60 * 24 // 1 day
 
 /**
  * Get value of cookie by name on clientside
@@ -44,15 +58,20 @@ export function setCookieString(name: CookieName, value: string, expireAt?: Date
   return `${name}=${value}; expires=${expireString}; Path=/; SameSite=Lax; HttpOnly; ${secureOption}`
 }
 
-// https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#cookie_prefixes
-const cookiePrefix = isProduction ? '__Host-' : ''
-
-export const cookieNames = {
-  tokenCookie: cookiePrefix + 'TOKEN',
-  sessionCookie: cookiePrefix + 'INVENTORY_APP_SESSION',
-} as const
-
-export type CookieName = (typeof cookieNames)[keyof typeof cookieNames]
+/**
+ * Create session cookie from id provider tokens
+ * @param idToken
+ * @returns
+ */
+export async function createSessionCookie(idToken: string) {
+  return setCookieString(
+    cookieNames.sessionCookie,
+    await auth.createSessionCookie(idToken, {
+      expiresIn: SESSION_EXPIRES_IN_MS,
+    }),
+    new Date(Date.now() + SESSION_EXPIRES_IN_MS),
+  )
+}
 
 /**
  * Encrypts user information to make it a token cookie
@@ -60,7 +79,13 @@ export type CookieName = (typeof cookieNames)[keyof typeof cookieNames]
  * @returns
  */
 export function createUserTokenCookie(userInfo: UserInfo) {
-  return encryptData(JSON.stringify(userInfo))
+  const encrypted = encryptData(JSON.stringify(userInfo))
+
+  return setCookieString(
+    cookieNames.tokenCookie,
+    encrypted,
+    new Date(Date.now() + TOKEN_EXPIRES_IN_MS),
+  )
 }
 
 /**
@@ -68,5 +93,5 @@ export function createUserTokenCookie(userInfo: UserInfo) {
  * @param cookie
  */
 export function getUserInfoFromUserTokenCookie(tokenCookie: string) {
-  return JSON.parse(decryptEncryptedData(tokenCookie))
+  return JSON.parse(decryptEncryptedData(tokenCookie)) as UserInfo
 }

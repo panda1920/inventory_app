@@ -8,11 +8,13 @@ type Data = SuccessResponse | FailResponse
 
 const logoutHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   const sessionCookie = req.cookies[cookieNames.sessionCookie]
-  if (sessionCookie) {
-    // remove cookie
-    res.setHeader('Set-Cookie', eraseCookieString(cookieNames.sessionCookie))
-  }
-  // if no session cookie just do nothing
+  const tokenCookie = req.cookies[cookieNames.tokenCookie]
+  const cookiesToErase = []
+
+  // remove cookies
+  if (sessionCookie) cookiesToErase.push(eraseCookieString(cookieNames.sessionCookie))
+  if (tokenCookie) cookiesToErase.push(eraseCookieString(cookieNames.tokenCookie))
+  res.setHeader('Set-Cookie', cookiesToErase)
 
   res.status(200).json({ success: true })
 }

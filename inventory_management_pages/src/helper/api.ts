@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
-import { cookieNames, eraseCookieString } from '@/helper/cookies'
+import { cookieNames, eraseCookieString, getUserInfoFromUserTokenCookie } from '@/helper/cookies'
 import { InventoryAppServerError } from '@/helper/errors'
 import { auth } from '@/helper/firebase-admin'
 
@@ -80,4 +80,11 @@ export async function decodeSessionCookie(cookies: Partial<{ [key: string]: stri
   if (!sessionCookie) return
 
   return await auth.verifySessionCookie(sessionCookie, true)
+}
+
+export function decodeTokenCookie(cookies: Partial<{ [key: string]: string }>) {
+  const tokenCookie = cookies[cookieNames.tokenCookie]
+  if (!tokenCookie) return
+
+  return getUserInfoFromUserTokenCookie(tokenCookie)
 }
