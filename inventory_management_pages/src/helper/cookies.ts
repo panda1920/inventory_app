@@ -1,4 +1,4 @@
-import { decryptEncryptedData, encryptData } from '@/helper/encrypt'
+import { encryptData } from '@/helper/encrypt'
 import { auth } from '@/helper/firebase-admin'
 
 const isProduction = process.env.NODE_ENV === 'production'
@@ -86,12 +86,4 @@ export function createUserTokenCookie(userInfo: UserInfo) {
     encrypted,
     new Date(Date.now() + TOKEN_EXPIRES_IN_MS),
   )
-}
-
-/**
- * Decrypts token cookie and recovers user information from it
- * @param cookie
- */
-export function getUserInfoFromUserTokenCookie(tokenCookie: string) {
-  return JSON.parse(decryptEncryptedData(tokenCookie)) as UserInfo
 }

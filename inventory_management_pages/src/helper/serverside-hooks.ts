@@ -9,7 +9,6 @@ import {
 
 import { decodeSessionCookie, decodeTokenCookie } from '@/helper/api'
 import { cookieNames, createUserTokenCookie, eraseCookieString } from '@/helper/cookies'
-import { auth } from '@/helper/firebase-admin'
 
 /**
  * Helps define common operation that needs to take place
@@ -54,7 +53,7 @@ async function extractUserInfoFromContext(context: GetServerSidePropsContext) {
 
   // if retrieval from token fails then get from session
   try {
-    user = await decodeSession(context)
+    user = await decodeSessionCookie(context.req.cookies)
     return user
   } catch (e) {
     console.error(e)
@@ -72,17 +71,6 @@ async function extractUserInfoFromContext(context: GetServerSidePropsContext) {
         ]
     context.res.setHeader('Set-Cookie', cookies)
   }
-}
-
-async function decodeSession(context: GetServerSidePropsContext) {
-  const claims = await decodeSessionCookie(context.req.cookies)
-  if (!claims) return claims
-
-  const user = await auth.getUser(claims.uid)
-  return {
-    uid: user.uid,
-    username: user.displayName || '',
-  } satisfies UserInfo
 }
 
 async function includeUserInfoToProps<T>(

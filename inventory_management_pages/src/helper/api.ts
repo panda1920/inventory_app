@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
-import { cookieNames, eraseCookieString, getUserInfoFromUserTokenCookie } from '@/helper/cookies'
+import { cookieNames, eraseCookieString } from '@/helper/cookies'
+import { decryptEncryptedData } from '@/helper/encrypt'
 import { InventoryAppServerError } from '@/helper/errors'
 import { auth } from '@/helper/firebase-admin'
 
@@ -75,16 +76,29 @@ export async function authorizeUser(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-export async function decodeSessionCookie(cookies: Partial<{ [key: string]: string }>) {
-  const sessionCookie = cookies[cookieNames.sessionCookie]
-  if (!sessionCookie) return
-
-  return await auth.verifySessionCookie(sessionCookie, true)
-}
-
 export function decodeTokenCookie(cookies: Partial<{ [key: string]: string }>) {
   const tokenCookie = cookies[cookieNames.tokenCookie]
   if (!tokenCookie) return
 
-  return getUserInfoFromUserTokenCookie(tokenCookie)
+  const data = JSON.parse(decryptEncryptedData(tokenCookie))
+  if (!verifyDataIsUserInfo(data)) throw new InventoryAppServerError('Invalid token', 400)
+
+  return data
+}
+
+function verifyDataIsUserInfo(data: object): data is UserInfo {
+  return 'uid' in data && 'username' in data && !!data.uid && !!data.username
+}
+
+export async function decodeSessionCookie(cookies: Partial<{ [key: string]: string }>) {
+  const sessionCookie = cookies[cookieNames.sessionCookie]
+  if (!sessionCookie) return
+
+  const claims = await auth.verifySessionCookie(sessionCookie, true)
+
+  const user = await auth.getUser(claims.uid)
+  return {
+    uid: user.uid,
+    username: user.displayName || '',
+  } satisfies UserInfo
 }
