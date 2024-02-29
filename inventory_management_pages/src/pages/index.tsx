@@ -3,6 +3,7 @@ import { Divider, useTheme } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
+import { GetServerSideProps } from 'next'
 import { Inter } from 'next/font/google'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -106,18 +107,20 @@ export default function Home() {
   )
 }
 
-export const getServerSideProps = withServerSideHooks(async (context) => {
-  // if loggedin send user to items page
-  if (context.user) {
-    return {
-      redirect: {
-        destination: '/items',
-        permanent: false,
-      },
+export const getServerSideProps: GetServerSideProps = (_context) => {
+  return withServerSideHooks(_context, async (context) => {
+    // if loggedin send user to items page
+    if (context.user) {
+      return {
+        redirect: {
+          destination: '/items',
+          permanent: false,
+        },
+      }
     }
-  }
 
-  return {
-    props: {},
-  }
-})
+    return {
+      props: {},
+    }
+  })
+}

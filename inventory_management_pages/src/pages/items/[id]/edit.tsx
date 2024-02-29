@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Box, Button, Typography } from '@mui/material'
+import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import { useForm } from 'react-hook-form'
@@ -89,28 +90,30 @@ function EditItem({ item }: EditItemProps) {
 
 export default withAuth(EditItem)
 
-export const getServerSideProps = withServerSideHooks<EditItemProps>(async (context) => {
-  // unauthenticated
-  if (!context.user) return redirectToTop()
+export const getServerSideProps: GetServerSideProps<EditItemProps> = (_context) => {
+  return withServerSideHooks<EditItemProps>(_context, async (context) => {
+    // unauthenticated
+    if (!context.user) return redirectToTop()
 
-  try {
-    const id = String(context.params?.id)
-    const item = await getItem({ id, ownerId: context.user.uid })
-    return {
-      props: { item },
+    try {
+      const id = String(context.params?.id)
+      const item = await getItem({ id, ownerId: context.user.uid })
+      return {
+        props: { item },
+      }
+    } catch (e) {
+      if (e instanceof InventoryAppBaseError) console.error(e.message)
+      return redirectToTop()
     }
-  } catch (e) {
-    if (e instanceof InventoryAppBaseError) console.error(e.message)
-    return redirectToTop()
-  }
-})
+  })
 
-function redirectToTop() {
-  return {
-    redirect: {
-      destination: '/',
-      permanent: true,
-    },
+  function redirectToTop() {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: true,
+      },
+    }
   }
 }
 

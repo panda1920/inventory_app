@@ -12,26 +12,28 @@ import { cookieNames, createUserTokenCookie, eraseCookieString } from '@/helper/
 
 /**
  * Helps define common operation that needs to take place
- * before and after the execution of per-page getServerSideProps() function
- * @param serversidePropsFunc
+ * before and after the execution of page specific serverside logic
+ * @param context
+ * @param pageSpecificLogic
  * @returns
  */
-export function withServerSideHooks<T extends object>(
-  serversidePropsFunc: GetServerSidePropsWithAuthenticatedUser<T> = emptyProps<T>,
+export async function withServerSideHooks<T extends object>(
+  context: GetServerSidePropsContextWithAuthenticatedUser,
+  pageSpecificLogic: (
+    context: GetServerSidePropsContextWithAuthenticatedUser,
+  ) => ReturnType<GetServerSideProps<T>> = emptyProps<T>,
 ) {
-  return (async (context: GetServerSidePropsContextWithAuthenticatedUser) => {
-    // do something before here
-    const user = await extractUserInfoFromContext(context)
-    context.user = user
+  // do something before here
+  const user = await extractUserInfoFromContext(context)
+  context.user = user
 
-    // execute route specific getServerSideProps()
-    const propsResult = await serversidePropsFunc(context)
+  // execute route specific getServerSideProps()
+  const propsResult = await pageSpecificLogic(context)
 
-    // do something after here
-    const propsResultWithUserInfo = await includeUserInfoToProps(propsResult, user)
+  // do something after here
+  const propsResultWithUserInfo = await includeUserInfoToProps(propsResult, user)
 
-    return propsResultWithUserInfo
-  }) satisfies GetServerSideProps
+  return propsResultWithUserInfo
 }
 
 async function emptyProps<T extends object>() {

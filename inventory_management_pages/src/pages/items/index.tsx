@@ -16,6 +16,7 @@ import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import { darken } from '@mui/material/styles'
 import clsx from 'clsx'
+import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import { ChangeEvent, useState } from 'react'
@@ -182,26 +183,28 @@ function Items({ items: fetchedItems }: ItemsProps) {
 
 export default withAuth(Items)
 
-export const getServerSideProps = withServerSideHooks<ItemsProps>(async (context) => {
-  // unauthenticated
-  if (!context.user) {
+export const getServerSideProps: GetServerSideProps<ItemsProps> = (_context) => {
+  return withServerSideHooks<ItemsProps>(_context, async (context) => {
+    // unauthenticated
+    if (!context.user) {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: true,
+        },
+      }
+    }
+
+    let items: Item[] = []
+    items = await listItems({ limit: 100, ownerId: context.user.uid })
+
     return {
-      redirect: {
-        destination: '/',
-        permanent: true,
+      props: {
+        items,
       },
     }
-  }
-
-  let items: Item[] = []
-  items = await listItems({ limit: 100, ownerId: context.user.uid })
-
-  return {
-    props: {
-      items,
-    },
-  }
-})
+  })
+}
 
 function ItemRow({
   item,

@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Box, Button, Typography } from '@mui/material'
+import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import { useForm } from 'react-hook-form'
@@ -82,21 +83,23 @@ function RegisterItem() {
 
 export default withAuth(RegisterItem)
 
-export const getServerSideProps = withServerSideHooks(async (context) => {
-  // unauthenticated
-  if (!context.user) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: true,
-      },
+export const getServerSideProps: GetServerSideProps = (_context) => {
+  return withServerSideHooks(_context, async (context) => {
+    // unauthenticated
+    if (!context.user) {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: true,
+        },
+      }
     }
-  }
 
-  return {
-    props: {},
-  }
-})
+    return {
+      props: {},
+    }
+  })
+}
 
 async function registerItem(payload: RegisterItemSchema) {
   const url = '/api/items'

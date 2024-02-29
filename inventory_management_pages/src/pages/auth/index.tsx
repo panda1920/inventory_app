@@ -2,6 +2,7 @@ import { ParsedUrlQuery } from 'querystring'
 
 import { CircularProgress } from '@mui/material'
 import { applyActionCode } from 'firebase/auth'
+import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import { useEffect } from 'react'
@@ -89,4 +90,6 @@ function isValidFirebaseAuthEmailHandlerParams(
   return true
 }
 
-export const getServerSideProps = withServerSideHooks()
+export const getServerSideProps: GetServerSideProps = (_context) => {
+  return withServerSideHooks(_context)
+}
