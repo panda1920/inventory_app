@@ -22,7 +22,6 @@ import { useSnackbar } from 'notistack'
 import { ChangeEvent, useState } from 'react'
 
 import withAuth from '@/components/hoc/with-auth/withAuth'
-import { listItems } from '@/handlers/item'
 import { InventoryAppClientError } from '@/helper/errors'
 import type { Item } from '@/types/entity/item'
 import { UpdateItemSchema } from '@/types/form/item'
@@ -184,6 +183,7 @@ export default withAuth(Items)
 
 export const getServerSideProps: GetServerSideProps<ItemsProps> = async (_context) => {
   const { withServerSideHooks } = await import('@/helper/serverside-hooks')
+  const { listItems } = await import('@/handlers/item')
 
   return withServerSideHooks<ItemsProps>(_context, async (context) => {
     // unauthenticated

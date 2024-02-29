@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form'
 
 import Input from '@/components/form/input'
 import withAuth from '@/components/hoc/with-auth/withAuth'
-import { getItem } from '@/handlers/item'
 import { InventoryAppBaseError, InventoryAppClientError } from '@/helper/errors'
 import { Item } from '@/types/entity/item'
 import { UpdateItemSchema, updateItemSchema } from '@/types/form/item'
@@ -91,6 +90,7 @@ export default withAuth(EditItem)
 
 export const getServerSideProps: GetServerSideProps<EditItemProps> = async (_context) => {
   const { withServerSideHooks } = await import('@/helper/serverside-hooks')
+  const { getItem } = await import('@/handlers/item')
 
   return withServerSideHooks<EditItemProps>(_context, async (context) => {
     // unauthenticated
