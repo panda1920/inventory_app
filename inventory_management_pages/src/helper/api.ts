@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
-import { cookieNames, eraseCookieString } from '@/helper/cookies'
+import { cookieNames, createUserTokenCookie, eraseCookieString } from '@/helper/cookies'
 import { decryptEncryptedData } from '@/helper/encrypt'
 import { InventoryAppServerError } from '@/helper/errors'
 import { auth } from '@/helper/firebase-admin'
@@ -50,8 +50,8 @@ export function createCommonApiHandler(handlers: HandlerSpecByMethods) {
       // execute handler
       const { handler, isRestricted } = spec
       if (isRestricted) {
-        const claim = await authorizeUser(req, res)
-        await handler(req, res, claim.uid)
+        const user = await authorizeUser(req, res)
+        await handler(req, res, user.uid)
       } else {
         await handler(req, res)
       }
@@ -63,16 +63,36 @@ export function createCommonApiHandler(handlers: HandlerSpecByMethods) {
 }
 
 export async function authorizeUser(req: NextApiRequest, res: NextApiResponse) {
-  try {
-    const claim = await decodeSessionCookie(req.cookies)
+  let user: UserInfo | undefined
 
-    if (!claim) throw new Error('Failed to authorize')
-    return claim
+  // first attempt, get userinfo from token
+  try {
+    user = decodeTokenCookie(req.cookies)
+    if (user) return user
   } catch (e) {
     console.error(e)
-    // invalidate session if failed to verify
-    res.setHeader('Set-Cookie', eraseCookieString(cookieNames.sessionCookie))
+  }
+
+  // if retrieval from token fails then get from session
+  try {
+    user = await decodeSessionCookie(req.cookies)
+    if (!user) throw new Error('Failed to authorize')
+    return user
+  } catch (e) {
+    console.error(e)
     throw new InventoryAppServerError('User unauthorized', 401)
+  } finally {
+    const cookies = user
+      ? [
+          // if user is found from session recreate token cookie
+          createUserTokenCookie(user),
+        ]
+      : [
+          // if user was not found from session invalidate both cookies
+          eraseCookieString(cookieNames.tokenCookie),
+          eraseCookieString(cookieNames.sessionCookie),
+        ]
+    res.setHeader('Set-Cookie', cookies)
   }
 }
 
