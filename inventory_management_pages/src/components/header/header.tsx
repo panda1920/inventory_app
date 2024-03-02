@@ -19,7 +19,7 @@ type HeaderType = {
 
 export default function Header({ className, contentClassName }: HeaderType) {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
-  const { logoutFromBackend } = useAuth({ afterLogoutAction: closeMenu })
+  const { logoutFromBackend } = useAuth({ afterLogout: closeMenu })
   const theme = useTheme()
   const colorScheme = useAppSelector(getColorScheme)
   const dispatch = useAppDispatch()

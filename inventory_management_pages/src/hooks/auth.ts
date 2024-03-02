@@ -26,8 +26,9 @@ import { LoginSchema } from '@/types/form/login'
 import { SignupSchema } from '@/types/form/signup'
 
 type UseAuthParams = {
-  afterLoginAction?: () => void
-  afterLogoutAction?: () => void
+  afterLogin?: () => void
+  afterLogout?: () => void
+  afterVerificationPrompt?: () => void
 }
 
 export function useAuth(params?: UseAuthParams) {
@@ -56,7 +57,7 @@ export function useAuth(params?: UseAuthParams) {
 
     dispatch(logoutAction())
     toastLogoutSuccess()
-    params?.afterLogoutAction?.()
+    params?.afterLogout?.()
   }
 
   async function login({ email, password }: LoginSchema) {
@@ -76,7 +77,7 @@ export function useAuth(params?: UseAuthParams) {
 
       await loginToBackend(result.user)
       await linkTemporaryCredential(result.user)
-      params?.afterLoginAction?.()
+      params?.afterLogin?.()
     } catch (e: any) {
       console.error(e)
 
@@ -104,6 +105,7 @@ export function useAuth(params?: UseAuthParams) {
     sendEmailVerification(credential.user, { handleCodeInApp: false, url: window.location.href })
     // make sure login state is persisted so it can be used later for verification process
     await getFirebaseAuth().setPersistence(browserLocalPersistence)
+    params?.afterVerificationPrompt?.()
   }
 
   async function linkTemporaryCredential(user: User) {

@@ -20,7 +20,7 @@ type LoginModalProps = {
 
 export default function LoginModal({ isOpen, close }: LoginModalProps) {
   const { login, loginWithGoogleHandler, loginWithGithubHandler } = useAuth({
-    afterLoginAction: close,
+    afterLogin: close,
   })
   const {
     handleSubmit,

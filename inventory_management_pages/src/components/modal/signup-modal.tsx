@@ -20,7 +20,8 @@ type SignupModalProps = {
 
 export default function SignupModal({ isOpen, close }: SignupModalProps) {
   const { loginWithGoogleHandler, loginWithGithubHandler, signup } = useAuth({
-    afterLoginAction: close,
+    afterLogin: close,
+    afterVerificationPrompt: close,
   })
   const {
     handleSubmit,
