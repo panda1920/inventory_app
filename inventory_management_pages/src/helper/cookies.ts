@@ -1,5 +1,6 @@
 import { encryptData } from '@/helper/encrypt'
 import { auth } from '@/helper/firebase-admin'
+import { UserInfo } from '@/types/auth'
 
 const isProduction = process.env.NODE_ENV === 'production'
 

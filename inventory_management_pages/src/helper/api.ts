@@ -4,6 +4,7 @@ import { cookieNames, createUserTokenCookie, eraseCookieString } from '@/helper/
 import { decryptEncryptedData } from '@/helper/encrypt'
 import { InventoryAppServerError } from '@/helper/errors'
 import { auth } from '@/helper/firebase-admin'
+import { UserInfo } from '@/types/auth'
 
 type Handler<T extends object = object> = (
   req: NextApiRequest,
