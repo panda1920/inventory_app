@@ -23,6 +23,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
+      HUSKY: 0 # To prevent husky getting installed in CI
       REPOSITORY_NAME: ${{ secrets.AWS_ECR_REPOSITORY_NAME }}
       IMAGE_TAG: prod
       WORKING_DIRECTORY: inventory_management_pages

@@ -1,0 +1,4 @@
+cd inventory_management_pages
+
+# any random shell command can be executed here
+npm run fix

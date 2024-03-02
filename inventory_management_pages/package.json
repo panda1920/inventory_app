@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "fix": "eslint --fix --ext .ts --ext .tsx src/ && prettier --write src/",
+    "prepare": "cd .. && husky inventory_management_pages/.husky"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
