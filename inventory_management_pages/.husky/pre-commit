@@ -1,4 +1,4 @@
+# any random shell command can be executed here
 cd inventory_management_pages
 
-# any random shell command can be executed here
-npm run fix
+npx lint-staged
