@@ -1,4 +1,4 @@
-type UserInfo = {
+export type UserInfo = {
   uid: string
   username: string
 }

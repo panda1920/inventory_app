@@ -9,6 +9,7 @@ import {
 
 import { decodeSessionCookie, decodeTokenCookie } from '@/helper/api'
 import { cookieNames, createUserTokenCookie, eraseCookieString } from '@/helper/cookies'
+import type { UserInfo } from '@/types/auth'
 
 /**
  * Helps define common operation that needs to take place
@@ -102,11 +103,3 @@ type GetServerSidePropsContextWithAuthenticatedUser<
 > = GetServerSidePropsContext<Params, Preview> & {
   user?: UserInfo
 }
-
-type GetServerSidePropsWithAuthenticatedUser<
-  Props extends { [key: string]: any } = { [key: string]: any },
-  Params extends ParsedUrlQuery = ParsedUrlQuery,
-  Preview extends PreviewData = PreviewData,
-> = (
-  context: GetServerSidePropsContextWithAuthenticatedUser<Params, Preview>,
-) => Promise<GetServerSidePropsResult<Props>>

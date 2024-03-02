@@ -1,6 +1,6 @@
 export class InventoryAppBaseError extends Error {
-  constructor(...args: any[]) {
-    super(...args)
+  constructor(message: string) {
+    super(message)
 
     // https://stackoverflow.com/questions/41102060/typescript-extending-error-class
     this.name = new.target.name

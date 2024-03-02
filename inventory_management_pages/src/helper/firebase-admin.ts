@@ -27,7 +27,7 @@ export const converter = <
 >(): FirestoreDataConverter<T> => ({
   toFirestore: (data) => {
     // remove id when inserting data
-    const { id, ...rest } = data
+    const { id: _, ...rest } = data
     return rest
   },
   fromFirestore: (snap: FirebaseFirestore.QueryDocumentSnapshot) => {

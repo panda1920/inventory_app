@@ -78,6 +78,7 @@ export function useAuth(params?: UseAuthParams) {
       await loginToBackend(result.user)
       await linkTemporaryCredential(result.user)
       params?.afterLogin?.()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       console.error(e)
 

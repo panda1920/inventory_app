@@ -5,7 +5,7 @@ import { decryptEncryptedData } from '@/helper/encrypt'
 import { InventoryAppServerError } from '@/helper/errors'
 import { auth } from '@/helper/firebase-admin'
 
-type Handler<T extends object = {}> = (
+type Handler<T extends object = object> = (
   req: NextApiRequest,
   res: NextApiResponse<T>,
   userId?: string,
@@ -55,6 +55,7 @@ export function createCommonApiHandler(handlers: HandlerSpecByMethods) {
       } else {
         await handler(req, res)
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       console.error(e.message ?? e)
       res.status(e.errorCode ?? 500).json({ message: e.message ?? 'Internal server error' })

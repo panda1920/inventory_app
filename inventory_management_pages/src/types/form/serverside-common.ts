@@ -8,7 +8,7 @@ import { InventoryAppServerError } from '@/helper/errors'
  * @param schema
  * @returns
  */
-export function parseAsSchemaType<T extends z.ZodTypeAny>(object: any, schema: T): z.infer<T> {
+export function parseAsSchemaType<T extends z.ZodTypeAny>(object: object, schema: T): z.infer<T> {
   try {
     return schema.parse(object)
   } catch (e) {

@@ -7,7 +7,7 @@ const secret = process.env.TOKEN_SECRET || ''
  * Expires in 30 days
  * @param payload
  */
-export function signToken(payload: any) {
+export function signToken(payload: string | object | Buffer) {
   return jwt.sign(payload, secret, { expiresIn: '30d' })
 }
 
