@@ -4,6 +4,7 @@ import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import clsx from 'clsx'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 import { MouseEvent, useState } from 'react'
 
 import DropdownMenu from '@/components/header/dropdown-menu'
@@ -19,10 +20,11 @@ type HeaderType = {
 
 export default function Header({ className, contentClassName }: HeaderType) {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
-  const { logoutFromBackend } = useAuth({ afterLogout: closeMenu })
+  const { logoutFromBackend } = useAuth({ afterLogout: afterLogoutHandler })
   const theme = useTheme()
   const colorScheme = useAppSelector(getColorScheme)
   const dispatch = useAppDispatch()
+  const router = useRouter()
 
   function openMenu(event: MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget)
@@ -30,10 +32,14 @@ export default function Header({ className, contentClassName }: HeaderType) {
   function closeMenu() {
     setAnchorEl(null)
   }
-  async function login() {
+  async function loginHandler() {
     dispatch(setLoginModal(() => true))
     dispatch(setSignupModal(() => false))
     closeMenu()
+  }
+  async function afterLogoutHandler() {
+    closeMenu()
+    router.replace('/')
   }
 
   return (
@@ -54,7 +60,7 @@ export default function Header({ className, contentClassName }: HeaderType) {
           anchorElement={anchorEl}
           isOpen={!!anchorEl}
           onClose={closeMenu}
-          onLogin={login}
+          onLogin={loginHandler}
           onLogout={logoutFromBackend}
         />
       </Toolbar>
