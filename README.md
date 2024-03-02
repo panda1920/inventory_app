@@ -4,6 +4,18 @@ A practice project to get a feel of how SSR works. Also tinkering around with ot
 
 Current goal is to create 2 separate directories containing an identical app feature-wise. One would be based off of Nextjs pages router, and ther other, app router. So far only the pages router side is implemented.
 
+## Tech stack
+- Nextjs pages router - frontend and API
+- Material UI - out of the box ui components
+- Tailwind - css framework
+- Zod - validation and type generation
+- Redux - frontend storage management
+- Firestore - persistent storage
+- Firebase Auth - user authentication and management
+- Github Actions - CI/CD
+- Amazon ECR - container registry
+- App Runner - hosting containerized app
+
 ## Testing out the app locally
 #### Prerequisites
 - nodejs >= 18

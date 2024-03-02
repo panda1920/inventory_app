@@ -9,6 +9,8 @@ on:
       - "master"
     paths:
       - "inventory_management_pages/**"
+    paths-ignore:
+      - '**/README.md'
   # for manual execution, the workflow must be in the default branch
   workflow_dispatch:
     inputs:
