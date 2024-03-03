@@ -2,7 +2,6 @@ import { ParsedUrlQuery } from 'querystring'
 
 import { CircularProgress } from '@mui/material'
 import { applyActionCode } from 'firebase/auth'
-import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import { useEffect } from 'react'
@@ -28,6 +27,8 @@ export default function Auth() {
   const { loginToBackend } = useAuth()
 
   useEffect(() => {
+    if (!router.isReady) return
+
     const handleEmailAction = async () => {
       try {
         // basic parameter check
@@ -55,7 +56,7 @@ export default function Auth() {
 
     handleEmailAction()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [router.isReady, router.query])
 
   function toastAccountVerified() {
     enqueueSnackbar('Your account has been verified.', { variant: 'success' })
@@ -87,9 +88,4 @@ function isValidFirebaseAuthEmailHandlerParams(
   if (!continueUrl.startsWith(process.env.NEXT_PUBLIC_SITE_URL || '')) return false
 
   return true
-}
-
-export const getServerSideProps: GetServerSideProps = async (_context) => {
-  const { withServerSideHooks } = await import('@/helper/serverside-hooks')
-  return withServerSideHooks(_context)
 }
