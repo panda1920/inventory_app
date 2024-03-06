@@ -42,29 +42,30 @@ export function useAuth(params?: UseAuthParams) {
   const loginWithGithubHandler = () => loginWithCredential(authorizeWithGithub)
 
   async function loginToBackend(user: User) {
-    await sendToken(await user.getIdToken())
+    // await login(await user.getIdToken())
+    await dispatch(
+      loginAction({ token: await user.getIdToken(), username: user.displayName ?? '---' }),
+    ).unwrap()
     await signOut(getFirebaseAuth())
-    dispatch(loginAction({ username: user.displayName ?? '---' }))
     toastLoginSuccess()
   }
 
   async function logoutFromBackend() {
     try {
-      await logout()
+      await dispatch(logoutAction())
     } catch (e) {
       console.error(e)
     }
 
-    dispatch(logoutAction())
     toastLogoutSuccess()
     params?.afterLogout?.()
   }
 
-  async function login({ email, password }: LoginSchema) {
+  async function loginWithEmail({ email, password }: LoginSchema) {
     await loginWithCredential(authorizeWithEmail(email, password))
   }
 
-  async function signup(signupSchema: SignupSchema) {
+  async function signupWithEmail(signupSchema: SignupSchema) {
     await loginWithCredential(authorizeWithNewEmail(signupSchema))
   }
 
@@ -171,12 +172,12 @@ export function useAuth(params?: UseAuthParams) {
   }
 
   return {
-    login,
+    loginWithEmail,
     loginWithGoogleHandler,
     loginWithGithubHandler,
     loginToBackend,
     logoutFromBackend,
-    signup,
+    signupWithEmail,
   }
 }
 
@@ -198,38 +199,4 @@ const authorizeWithNewEmail = (signupSchema: SignupSchema) => async () => {
   await updateProfile(userCredential.user, { displayName: username })
 
   return userCredential
-}
-
-// API call
-async function sendToken(token: string) {
-  const url = '/api/auth/login'
-  const options: RequestInit = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ token }),
-  }
-
-  const response = await fetch(url, options)
-  if (response.ok) return await response.json()
-
-  console.error(response.body)
-  console.error(response.status)
-  throw new InventoryAppClientError('Login Failed')
-}
-async function logout() {
-  const url = '/api/auth/logout'
-  const options: RequestInit = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }
-
-  const response = await fetch(url, options)
-  const responseJson = await response.json()
-  if (response.ok) return responseJson
-
-  throw new InventoryAppClientError(responseJson.messasge ?? 'Error during logout')
 }

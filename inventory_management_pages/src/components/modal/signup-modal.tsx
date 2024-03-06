@@ -19,7 +19,7 @@ type SignupModalProps = {
 }
 
 export default function SignupModal({ isOpen, close }: SignupModalProps) {
-  const { loginWithGoogleHandler, loginWithGithubHandler, signup } = useAuth({
+  const { loginWithGoogleHandler, loginWithGithubHandler, signupWithEmail } = useAuth({
     afterLogin: close,
     afterVerificationPrompt: close,
   })
@@ -47,7 +47,7 @@ export default function SignupModal({ isOpen, close }: SignupModalProps) {
   }, [isOpen, reset])
 
   async function signupHandler(data: SignupSchema) {
-    await signup(data)
+    await signupWithEmail(data)
   }
 
   return (

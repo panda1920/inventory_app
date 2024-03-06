@@ -50,6 +50,8 @@ const store = configureStore({
           REGISTER,
           'modal/setLoginModal',
           'modal/setSignupModal',
+          'user/login/rejected',
+          'user/logout/rejected',
         ],
       },
     })
