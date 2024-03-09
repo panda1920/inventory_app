@@ -42,10 +42,7 @@ export const logoutAction = createAsyncThunk('user/logout', async (_, thunk) => 
 
   const response = await fetch(url, options)
   const json = await response.json()
-  if (response.ok) {
-    thunk.dispatch(clearSession())
-    return json
-  }
+  if (response.ok) return json
 
   return thunk.rejectWithValue(new InventoryAppClientError(json.messasge ?? 'Error during logout'))
 })
@@ -70,11 +67,16 @@ const userSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    builder.addCase(loginAction.fulfilled, (state, action) => {
-      const { username } = action.payload
-      state.isLoggedIn = true
-      state.username = username
-    })
+    builder
+      .addCase(loginAction.fulfilled, (state, action) => {
+        const { username } = action.payload
+        state.isLoggedIn = true
+        state.username = username
+      })
+      .addCase(logoutAction.fulfilled, (state) => {
+        state.isLoggedIn = false
+        state.username = undefined
+      })
   },
 })
 

@@ -4,7 +4,6 @@ import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import clsx from 'clsx'
 import Image from 'next/image'
-import { useRouter } from 'next/router'
 import { MouseEvent, useState } from 'react'
 
 import DropdownMenu from '@/components/header/dropdown-menu'
@@ -24,7 +23,6 @@ export default function Header({ className, contentClassName }: HeaderType) {
   const theme = useTheme()
   const colorScheme = useAppSelector(getColorScheme)
   const dispatch = useAppDispatch()
-  const router = useRouter()
 
   function openMenu(event: MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget)
@@ -39,7 +37,6 @@ export default function Header({ className, contentClassName }: HeaderType) {
   }
   async function afterLogoutHandler() {
     closeMenu()
-    router.replace('/')
   }
 
   return (
