@@ -12,7 +12,6 @@ import {
 import storage from 'redux-persist/lib/storage'
 
 import appSlice from '@/store/slice/app'
-import counterSlice from '@/store/slice/counter'
 import modalSlice from '@/store/slice/modal'
 import userSlice from '@/store/slice/user'
 
@@ -28,7 +27,6 @@ const persistedReducer = persistReducer(
   persistConfig,
   combineReducers({
     user: userSlice.reducer,
-    counter: counterSlice.reducer,
     app: appSlice.reducer,
     modal: modalSlice.reducer,
   }),
