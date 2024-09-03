@@ -47,6 +47,7 @@ export default function Header({ className, contentClassName }: HeaderType) {
           height='36'
           width='222' // 6.19 * height
           alt='logo'
+          priority
         />
 
         <IconButton aria-label='hamburger-menu' size='medium' onClick={openMenu}>
