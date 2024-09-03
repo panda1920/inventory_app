@@ -116,7 +116,7 @@ function Items({ items: fetchedItems }: ItemsProps) {
             <Box className='relative group'>
               <Search
                 className={clsx(
-                  'absolute left-2 top-1/2 translate-y-[-50%] group-focus-within:hidden',
+                  'absolute left-2 top-1/2 translate-y-[-50%] group-focus-within:hidden pointer-events-none',
                   keyword && '!hidden',
                 )}
               />
